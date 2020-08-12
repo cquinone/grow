@@ -1,0 +1,62 @@
+ 
+STORE:
+	Add animation on storeowner question
+
+PRUNE:
+	possible fruits on plant? match number?
+	FRUITS ARE ALL ON THE GROUND -> that way need not place on plant itself
+
+
+EVOLVE:
+	poke-esque flashing switch for transformation?
+	or rather, smooth transition like plant growing? --> probably not, too hard
+
+
+PLANT DISPLAY:
+	Need mask for plants, so if click on plants, can gather fruit?
+	add stats below plant
+	Modify so picking which image is based on linking stage to loaded images for given plant
+	--> means taking all images from auto_draw, then throwing in class definition?
+
+PLANT CROSS:
+	Track something like "health" stat secretly, and only mention when crossing plants
+	Healthier plant (I.e. treated better?) has greater chance of passing along attributes
+	--> so its "fitter" in this arena, and prob to choose that plant's dataset portion is higher in cross
+	WILL need to save plant data somewhere on generation (pass back to main) so cross possible
+	POSSIBLE: literally interlace slices of each tree? would have to avoid branches though ....
+			  mix of interlacing and ... or use same algo for branch and trunk creation AND now add in leaves?
+			  draw some
+
+
+use tkinter to draw things on a canvas, randomize drawings in way that makes rando plant, then come up with rules to cross two drawings ..
+WILD: depends on color values that will define plant parts? ... 
+draw a bunch of test plants, try to determine way to combine the drawings so as to still have a "plant" like thing that emerges
+might depend on rules that define each .. actually definitely will
+
+
+same seed each time, but different base, trunk, top, and branches
+make smaller seed to display
+howto pick places to place leaves? --> could only be at end of branches....
+attributes: 
+		branch: {length, location, number, color}  --> length is like num of recursive branch offs
+		base: {width, height, color} --> width for circle base means radius
+		trunk: {width, height, color} --> width for trunk is equal to or less than trunk
+		top: {shape, color, width} --> width is equal to or less than trunk width
+
+# bases: start with rectangle, circle, trapezoid...
+# need seed -> bud -> sapling -> super sapling -> tree
+# tree is full, super sapling is base+ half trunk
+# sapling is base?
+# seed and bud are same, just color random that matches full plant?
+# actually seed is same always brown
+
+
+ImageDraw.arc(xy, start, end, fill=None, width=0)
+ImageDraw.chord(xy, start, end, fill=None, outline=None, width=1)
+ImageDraw.ellipse(xy, fill=None, outline=None, width=1)
+ImageDraw.pieslice(xy, start, end, fill=None, outline=None, width=1)
+ImageDraw.point(xy, fill=None)
+ImageDraw.rectangle(xy, fill=None, outline=None, width=1)
+ImageDraw.text(xy, text, fill=None, font=None, anchor=None, spacing=4, align='left', direction=None, features=None, language=None, stroke_width=0, stroke_fill=None)
+ImageDraw.line(xy, fill=None, width=0, joint=None) --> width is line width, joint can be "curve" for rounded line sequences
+
