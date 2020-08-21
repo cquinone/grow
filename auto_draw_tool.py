@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import Image, ImageDraw
 import random as rand
 import math
+import sys
 
 
 pic_width = 500
@@ -20,13 +21,15 @@ GREENS = [leaf,baby_turtle,jungle,amoeba]
 
 
 class line_piece():
-    def __init__(self,name,x_start,y_start,x_end,y_end,color):
+    def __init__(self,name,x_start,y_start,x_end,y_end,width,color,identity):
     	self.name = name
     	self.x_start = x_start
     	self.y_start = y_start
     	self.x_end = x_end
     	self.y_end = y_end
+    	self.width = width
     	self.color = color
+    	self.identity = identity
 
 
 # for fruits and trunk
@@ -45,44 +48,50 @@ def gen_color():
 
 # generate the text rules used to draw a tree png
 def gen_rules():
+	id_index = 0
 	rules = []
 	trunk_color = gen_color()
 	branch_color = rand.choice(BROWNS)
 
 	# generate trunk data
-	trunk_num = rand.randint(4,10)
+	trunk_num = rand.randint(11,25)
 	# need to pick length of each one .. so make it a dict with each trunk with a length and angle(0 to pi)
 	for i in range(trunk_num):
-		length = 9*rand.uniform(.5,1)
+		length = 25*rand.uniform(.6,1)
+		angle = rand.uniform(math.pi/4,3*(math.pi/4))
 		if i == 0:
-			# start at center of width for first one, stright up angle
-			angle = math.pi/2
 			y_start = 0
 			x_start = pic_width/2
 
 		if i != 0:
 			# start at end of last
-			angle = rand.uniform(math.pi/4,3*(math.pi/4))
 			x_start = x_end
 			y_start = y_end
 
 		x_end = x_start+length*math.cos(angle)
-		y_end = y_start+length*math.sin(angle)
-		rules.append(line_piece("trunk",x_start,y_start,x_end,y_end,trunk_color))
+		y_end = y_start+length*math.sin(angle)	
+		width = int(5 + 10*rand.uniform(.5,1)*(1/(1.09**i)))
+		rules.append(line_piece("trunk",x_start,y_start,x_end,y_end,width,trunk_color,id_index))
+		id_index = id_index + 1
 	
 	for trunk in rules:
-		print("x_start: ", trunk.x_start)
-		print("x_end: ", trunk.x_end)
+		print("TRUNK AT: ", trunk.x_start, trunk.y_start, " ", "ENDS AT: ", trunk.x_end, trunk.y_end, " ", "ID: ", trunk.identity)
 
+	id_index = 0
 	# choose number of main branches to add
-	branch_num = rand.randint(2,5)
+	branch_num = rand.randint(6,9)
+	indexes = []  #which trunks already have a branch
 	# first set up a main branch
 	for i in range(branch_num):
-		length = 4*rand.random()
+		#length = 60*rand.random()  ALSO SWITCH TO UNIFORM!
+		length = 30
 		angle = rand.uniform(math.pi/6,5*(math.pi/6))
 		# pick which trunk
 		trunk_index = rand.randint(1,trunk_num)
+		while (trunk_index in indexes):
+			trunk_index = rand.randint(1,trunk_num)
 		which_trunk = rules[trunk_index-1]
+		print("TRUNK CHOSEN: ", which_trunk.identity)
 		# pick where along the trunk to place the branch
 		x_start = which_trunk.x_start
 		y_start = which_trunk.y_start
@@ -91,7 +100,7 @@ def gen_rules():
 		if x_end != x_start:
 			slope = (y_end-y_start)/(x_end-x_start)
 			b = y_start - slope*(x_start)
-			branch_x_start = rand.random()*(x_end-x_start)
+			branch_x_start = rand.uniform(x_end, x_start)
 			branch_y_start = slope*(branch_x_start) + b
 			branch_y_end = y_start+length*math.sin(angle)
 			branch_x_end = x_start+length*math.cos(angle)
@@ -102,32 +111,32 @@ def gen_rules():
 				branch_x_end = x_start + length
 			if r >= .5:
 				branch_x_end = x_start - length
-			branch_y_start = rand.random()*(y_end-y_start)
+			branch_y_start = rand.uniform(y_end,y_start)
 			branch_y_end = branch_y_start
 
+		indexes.append(trunk_index)
 		# then branch from that branch, necessarily shorter, up to two?
 		# TEST BEFORE BRANCHING ON  BRANCHES
 		#branch_split = rand.randint(0,2)
 		#for j in branch_split:
 		#	angle = math.pi/2*rand.random()
 			# have to account for side from main branch!
-		rules.append(line_piece("branch",branch_x_start,branch_y_start,branch_x_end,branch_y_end,branch_color))
-
-	## pick num of branches
-	#branch_num = rand.randint(2,5)
-
-	## gen list of branches, each with a lnnegth, angle, position, breakdown
-	#branches = gen_branches(branch_num) 
+		rules.append(line_piece("branch",branch_x_start,branch_y_start,branch_x_end,branch_y_end,4,branch_color,id_index))
+		id_index = id_index + 1
+		print("BRANCH AT: ", rules[-1].x_start,rules[-1].y_start, " ", "ENDS AT: ", rules[-1].x_end,rules[-1].y_end)
 	return rules
 
 
 def draw_rules(image1,draw,rules):
 	for rule in rules:
 		color = rule.color
-		if rule.name == "trunk":
-			draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,width=5)
 		if rule.name == "branch":
-			draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,width=1)
+			draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
+	for rule in rules:
+		color = rule.color
+		if rule.name == "trunk":
+			draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
+
 
 	return image1,draw
 	#
@@ -156,7 +165,8 @@ def create_tree(filename):
 	image1.save(filename+".png")
 
 
-create_tree("test_tree")
+for i in range(1,10):
+	create_tree("tree_"+str(i))
 
 
 # generate rules for plant structure...

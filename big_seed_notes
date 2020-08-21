@@ -51,6 +51,9 @@ attributes:
 # actually seed is same always brown
 
 
+experiment with drawing trunks of only the same length until past certain trunk num (i.e. height?)
+trunk splits? just like branch splits, but allow for literally one or two...
+
 ImageDraw.arc(xy, start, end, fill=None, width=0)
 ImageDraw.chord(xy, start, end, fill=None, outline=None, width=1)
 ImageDraw.ellipse(xy, fill=None, outline=None, width=1)
