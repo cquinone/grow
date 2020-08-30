@@ -52,13 +52,28 @@ def gen_rules():
 	rules = []
 	trunk_color = gen_color()
 	branch_color = rand.choice(BROWNS)
+	
+	# set up initial values that will be varied around randomly
+	# trunks first
+	trunk_num_min = 11
+	trunk_num_max = 20
+	trunk_mag = 25
+	trunk_angle_min = math.pi/4
+	trunk_angle_max = 3*(math.pi/4)
+	# then branches
+	branch_num_max = 8
+	branch_num_min = 4
+	branch_mag = 30
+	branch_angle_min = math.pi/6
+	branch_angle_max = 5*(math.pi/6)
+	branch_width = 6
 
 	# generate trunk data
-	trunk_num = rand.randint(11,25)
+	trunk_num = rand.randint(trunk_num_min,trunk_num_max)
 	# need to pick length of each one .. so make it a dict with each trunk with a length and angle(0 to pi)
 	for i in range(trunk_num):
-		length = 25*rand.uniform(.6,1)
-		angle = rand.uniform(math.pi/4,3*(math.pi/4))
+		length = trunk_mag*rand.uniform(.6,1)
+		angle = rand.uniform(trunk_angle_min,trunk_angle_max)
 		if i == 0:
 			y_start = 0
 			x_start = pic_width/2
@@ -75,16 +90,20 @@ def gen_rules():
 		id_index = id_index + 1
 	
 	for trunk in rules:
-		print("TRUNK AT: ", trunk.x_start, trunk.y_start, " ", "ENDS AT: ", trunk.x_end, trunk.y_end, " ", "ID: ", trunk.identity)
-
+		#print("TRUNK AT: ", trunk.x_start, trunk.y_start, " ", "ENDS AT: ", trunk.x_end, trunk.y_end, " ", "ID: ", trunk.identity)
+		print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
+		print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
+		print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
+		print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
+		
 	id_index = 0
 	# choose number of main branches to add
-	branch_num = rand.randint(6,9)
+	branch_num = rand.randint(branch_num_min,branch_num_max)
 	indexes = []  #which trunks already have a branch
 	# first set up a main branch
 	for i in range(branch_num):
 		#length = 60*rand.random()  ALSO SWITCH TO UNIFORM!
-		length = 30
+		length = branch_mag
 		angle = rand.uniform(math.pi/6,5*(math.pi/6))
 		# pick which trunk
 		trunk_index = rand.randint(1,trunk_num)
@@ -121,9 +140,9 @@ def gen_rules():
 		#for j in branch_split:
 		#	angle = math.pi/2*rand.random()
 			# have to account for side from main branch!
-		rules.append(line_piece("branch",branch_x_start,branch_y_start,branch_x_end,branch_y_end,4,branch_color,id_index))
+		rules.append(line_piece("branch",branch_x_start,branch_y_start,branch_x_end,branch_y_end,branch_width,branch_color,id_index))
 		id_index = id_index + 1
-		print("BRANCH AT: ", rules[-1].x_start,rules[-1].y_start, " ", "ENDS AT: ", rules[-1].x_end,rules[-1].y_end)
+		#print("BRANCH AT: ", rules[-1].x_start,rules[-1].y_start, " ", "ENDS AT: ", rules[-1].x_end,rules[-1].y_end)
 	return rules
 
 
@@ -136,8 +155,8 @@ def draw_rules(image1,draw,rules):
 		color = rule.color
 		if rule.name == "trunk":
 			draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
-
-
+	print("DREW TREE")
+	print("")
 	return image1,draw
 	#
 	## do the PIL image/draw (in memory) drawings
