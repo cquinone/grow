@@ -32,7 +32,11 @@ class line_piece():
     	self.identity = identity
 
 
-# for fruits and trunk
+#def calc_corners(trunk1,trunk2):
+	#return p1,p2,p3
+
+
+# for fruits and trunk, makes a color thats not too close to white (so as to appear on canvas)
 def gen_color():
 	r = rand.randint(0,255)
 	if r >= 200:
@@ -95,14 +99,6 @@ def gen_rules():
 	
 	for trunk in rules:
 		print("TRUNK AT: ", trunk.x_start, trunk.y_start, " ", "ENDS AT: ", trunk.x_end, trunk.y_end, " ", "ID: ", trunk.identity)
-	#	print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
-	#	print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
-	#	print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
-	#	print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
-	#	print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
-	#	print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
-	#	print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
-	#	print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
 
 	id_index = 0
 	# choose number of main branches to add
@@ -163,8 +159,22 @@ def draw_rules(image1,draw,rules):
 		color = rule.color
 		if rule.name == "trunk":
 			draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
-	print("DREW TREE")
-	print("")
+
+		# now also try filling gaps!
+		# for a trunk-trunk pair, get correct corners and construct filling polygon
+	for i in range(len(rules)):
+		rule = rules[i]
+		color = rule.color
+		draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
+		if rule.name == "trunk":
+			if i != len(rules)-1: #so we are not on the last rule
+				if rules[i+1].name  == "trunk": # if we are not on the last trunk (only doing pairs!!)
+					# can calc corners here
+					print("this trunk points: ", rule.x_start,rule.y_start,rule.x_end,rule.y_end)
+					print("next trunk points: ", rules[i+1].x_start,rules[i+1].y_start,rules[i+1].x_end,rules[i+1].y_end)
+					#p1,p2,p3 = calc_corners(rule,rules[i+1])
+
+
 	return image1,draw
 	#
 	## do the PIL image/draw (in memory) drawings
