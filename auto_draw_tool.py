@@ -55,11 +55,12 @@ def gen_rules():
 	
 	# set up initial values that will be varied around randomly
 	# trunks first
-	trunk_num_min = 11
-	trunk_num_max = 20
-	trunk_mag = 25
+	trunk_num_min = 22
+	trunk_num_max = 40
+	trunk_mag = 12.5
 	trunk_angle_min = math.pi/4
 	trunk_angle_max = 3*(math.pi/4)
+	repeat_prob = .2
 	# then branches
 	branch_num_max = 8
 	branch_num_min = 4
@@ -75,6 +76,7 @@ def gen_rules():
 		length = trunk_mag*rand.uniform(.6,1)
 		angle = rand.uniform(trunk_angle_min,trunk_angle_max)
 		if i == 0:
+			angle = math.pi/2
 			y_start = 0
 			x_start = pic_width/2
 
@@ -85,17 +87,23 @@ def gen_rules():
 
 		x_end = x_start+length*math.cos(angle)
 		y_end = y_start+length*math.sin(angle)	
-		width = int(5 + 10*rand.uniform(.5,1)*(1/(1.09**i)))
+		#width = int(5 + 10*rand.uniform(.5,1)*(1/(1.09**i)))
+		width = int(4 + 12*rand.uniform(.6,1)*(1/(1.12**i)))
+		print("TRUNK WIDTH: ", width)
 		rules.append(line_piece("trunk",x_start,y_start,x_end,y_end,width,trunk_color,id_index))
 		id_index = id_index + 1
 	
 	for trunk in rules:
-		#print("TRUNK AT: ", trunk.x_start, trunk.y_start, " ", "ENDS AT: ", trunk.x_end, trunk.y_end, " ", "ID: ", trunk.identity)
-		print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
-		print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
-		print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
-		print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
-		
+		print("TRUNK AT: ", trunk.x_start, trunk.y_start, " ", "ENDS AT: ", trunk.x_end, trunk.y_end, " ", "ID: ", trunk.identity)
+	#	print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
+	#	print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
+	#	print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
+	#	print("["+str(trunk.x_start)+",", str(trunk.y_start)+"],")
+	#	print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
+	#	print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
+	#	print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
+	#	print("["+str(trunk.x_end)+",", str(trunk.y_end)+"],")
+
 	id_index = 0
 	# choose number of main branches to add
 	branch_num = rand.randint(branch_num_min,branch_num_max)
@@ -110,7 +118,7 @@ def gen_rules():
 		while (trunk_index in indexes):
 			trunk_index = rand.randint(1,trunk_num)
 		which_trunk = rules[trunk_index-1]
-		print("TRUNK CHOSEN: ", which_trunk.identity)
+		#print("TRUNK CHOSEN: ", which_trunk.identity)
 		# pick where along the trunk to place the branch
 		x_start = which_trunk.x_start
 		y_start = which_trunk.y_start
@@ -184,7 +192,7 @@ def create_tree(filename):
 	image1.save(filename+".png")
 
 
-for i in range(1,10):
+for i in range(1,2):
 	create_tree("tree_"+str(i))
 
 

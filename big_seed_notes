@@ -63,6 +63,8 @@ want probably smoother sections ... longer trunks and lesser pieces? or tons, sm
 
 look into bezier.. generate trunks similarly save for now all yoou need is points? than draw bezier point by point by calculating paramteric rep. based on all points
 
+split trunks, fill rectangle / thick line splits?, add repeat chance on trunk
+
 
 
 ImageDraw.arc(xy, start, end, fill=None, width=0)
@@ -74,50 +76,8 @@ ImageDraw.rectangle(xy, fill=None, outline=N
 one, width=1)
 ImageDraw.text(xy, text, fill=None, font=None, anchor=None, spacing=4, align='left', direction=None, features=None, language=None, stroke_width=0, stroke_fill=None)
 ImageDraw.line(xy, fill=None, width=0, joint=None) --> width is line width, joint can be "curve" for rounded line sequences
-
-
-arc:
-Draws an arc (a portion of a circle outline) between the start and end angles, inside the given bounding box.
-
-Parameters
-xy – Two points to define the bounding box. Sequence of [(x0, y0), (x1, y1)] or [x0, y0, x1, y1], where x1 >= x0 and y1 >= y0.
-
-start – Starting angle, in degrees. Angles are measured from 3 o’clock, increasing clockwise.
-
-end – Ending angle, in degrees.
-
-fill – Color to use for the arc.
-
-width –
-
-The line width, in pixels.
-
-
-chord:
-Same as arc(), but connects the end points with a straight line.
-
-Parameters
-xy – Two points to define the bounding box. Sequence of [(x0, y0), (x1, y1)] or [x0, y0, x1, y1], where x1 >= x0 and y1 >= y0.
-
-outline – Color to use for the outline.
-
-fill – Color to use for the fill.
-
-width –
-
-The line width, in pixels.
+ImageDraw.polygon(xy, fill=None, outline=None)
 
 
 
-
-bezier:
-defined by succession of points, which "draw" the curve to themselves and create the curvature
-examp for two points:
-	p_0 + t(p_1 - p_0), set t to anyting to get point on curve, p_0 is actual first point, p_1 is actual second
-general def:
-	sum_i to n (choose(n,i)*(1-t)^(n-i)*t^(i)*p_i)
-	so choose a bunch of points that are start and end points of trunks
-	arrange in correct order
-	then input to this function as data, and call function for t = 1 to 10, increasing by .01 or something... (figure out range)
-	then take output points and plot as its own curve
 
