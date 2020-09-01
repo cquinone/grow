@@ -32,9 +32,13 @@ class line_piece():
     	self.identity = identity
 
 
-#def calc_corners(trunk1,trunk2):
-	#return p1,p2,p3
-
+def calc_corner_diffs(trunk):
+	a = trunk.x_end - trunk.x_start
+	b = trunk.y_end - trunk.y_start
+	d = ((trunk.width*trunk.width)/4)*(1/((b/a)**2 + 1))
+	d = math.sqrt(d)
+	c = -(b/a)*d
+	return c,d
 
 # for fruits and trunk, makes a color thats not too close to white (so as to appear on canvas)
 def gen_color():
@@ -61,7 +65,7 @@ def gen_rules():
 	# trunks first
 	trunk_num_min = 22
 	trunk_num_max = 40
-	trunk_mag = 12.5
+	trunk_mag = 14
 	trunk_angle_min = math.pi/4
 	trunk_angle_max = 3*(math.pi/4)
 	repeat_prob = .2
@@ -92,7 +96,7 @@ def gen_rules():
 		x_end = x_start+length*math.cos(angle)
 		y_end = y_start+length*math.sin(angle)	
 		#width = int(5 + 10*rand.uniform(.5,1)*(1/(1.09**i)))
-		width = int(4 + 12*rand.uniform(.6,1)*(1/(1.12**i)))
+		width = int(7 + 12*rand.uniform(.6,1)*(1/(1.12**i)))
 		print("TRUNK WIDTH: ", width)
 		rules.append(line_piece("trunk",x_start,y_start,x_end,y_end,width,trunk_color,id_index))
 		id_index = id_index + 1
@@ -170,18 +174,24 @@ def draw_rules(image1,draw,rules):
 			if i != len(rules)-1: #so we are not on the last rule
 				if rules[i+1].name  == "trunk": # if we are not on the last trunk (only doing pairs!!)
 					# can calc corners here
-					print("this trunk points: ", rule.x_start,rule.y_start,rule.x_end,rule.y_end)
-					print("next trunk points: ", rules[i+1].x_start,rules[i+1].y_start,rules[i+1].x_end,rules[i+1].y_end)
-					#p1,p2,p3 = calc_corners(rule,rules[i+1])
-
+					p1 = [rule.x_end,rule.y_end]
+					if i != 0:
+						c,d = calc_corner_diffs(rule)
+					if i == 0:
+						c = -rule.width/2
+						d = 0
+					if rules[i+1].x_end < rule.x_end:
+						c = abs(c)
+					if rules[i+1].x_end > rule.x_end:
+						c = -abs(c)
+					d = -abs(d)
+					g,h = calc_corner_diffs(rules[i+1])
+					p2 = [p1[0]+c,p1[1]+d]
+					p3 = [p1[0]+g,p1[1]+h]
+					draw.polygon([p1[0],p1[1],p2[0],p2[1],p3[0],p3[1]],fill=rule.color,outline=None)
+					#draw.line()
 
 	return image1,draw
-	#
-	## do the PIL image/draw (in memory) drawings
-	#draw.line([0, 250, width, 250], branch_color)
-	## example polygon, some traingle on triangle thing
-	#draw.polygon([(128,128),(384,384),(128,384),(384,128)],
-	#          fill=main_color,outline=(255,0,0,255))
 
 
 def create_tree(filename):
@@ -190,6 +200,9 @@ def create_tree(filename):
 	# memory only, not visible
 	image1 = Image.new("RGB", (pic_width, pic_height), white)
 	draw = ImageDraw.Draw(image1)
+
+	image2 = Image.new("RGB", (pic_width, pic_height), white)
+	draw2 = ImageDraw.Draw(image2)
 
 	# gen rules code
 	rules = gen_rules()
@@ -200,6 +213,7 @@ def create_tree(filename):
 	# PIL image can be saved as .png .jpg .gif or .bmp file (among others)
 	#filename = "tree.png"
 	image1.save(filename+".png")
+	image2.save("other.png")
 
 
 for i in range(1,2):
