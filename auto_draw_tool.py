@@ -66,6 +66,7 @@ def gen_rules():
 	trunk_num_min = 22
 	trunk_num_max = 40
 	trunk_mag = 14
+	trunk_base_width = 7
 	trunk_angle_min = math.pi/4
 	trunk_angle_max = 3*(math.pi/4)
 	repeat_prob = .2
@@ -75,7 +76,7 @@ def gen_rules():
 	branch_mag = 30
 	branch_angle_min = math.pi/6
 	branch_angle_max = 5*(math.pi/6)
-	branch_width = 6
+	branch_width = 3
 
 	# generate trunk data
 	trunk_num = rand.randint(trunk_num_min,trunk_num_max)
@@ -95,8 +96,7 @@ def gen_rules():
 
 		x_end = x_start+length*math.cos(angle)
 		y_end = y_start+length*math.sin(angle)	
-		#width = int(5 + 10*rand.uniform(.5,1)*(1/(1.09**i)))
-		width = int(7 + 12*rand.uniform(.6,1)*(1/(1.12**i)))
+		width = int(trunk_base_width + 12*rand.uniform(.6,1)*(1/(1.12**i)))
 		print("TRUNK WIDTH: ", width)
 		rules.append(line_piece("trunk",x_start,y_start,x_end,y_end,width,trunk_color,id_index))
 		id_index = id_index + 1
@@ -118,7 +118,6 @@ def gen_rules():
 		while (trunk_index in indexes):
 			trunk_index = rand.randint(1,trunk_num)
 		which_trunk = rules[trunk_index-1]
-		#print("TRUNK CHOSEN: ", which_trunk.identity)
 		# pick where along the trunk to place the branch
 		x_start = which_trunk.x_start
 		y_start = which_trunk.y_start
@@ -155,21 +154,12 @@ def gen_rules():
 
 
 def draw_rules(image1,draw,rules):
-	for rule in rules:
-		color = rule.color
-		if rule.name == "branch":
-			draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
-	for rule in rules:
-		color = rule.color
-		if rule.name == "trunk":
-			draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
-
-		# now also try filling gaps!
-		# for a trunk-trunk pair, get correct corners and construct filling polygon
 	for i in range(len(rules)):
 		rule = rules[i]
 		color = rule.color
 		draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
+		# now also try filling gaps!
+		# for a trunk-trunk pair, get correct corners and construct filling polygon
 		if rule.name == "trunk":
 			if i != len(rules)-1: #so we are not on the last rule
 				if rules[i+1].name  == "trunk": # if we are not on the last trunk (only doing pairs!!)
@@ -218,29 +208,3 @@ def create_tree(filename):
 
 for i in range(1,2):
 	create_tree("tree_"+str(i))
-
-
-# generate rules for plant structure...
-# so like trunk num, trunk color (color vals could be combined and remixed!!)
-# branch num -> choose either? 
-
-# or different type---> literally write list where drawing steps are followed
-# then have splice pooints and take splices via fitness
-#EXAMPLE:
-# ##TRUNKS##
-# (this will be all lines, but only requires lengths and angles)
-# LINE(start, end, width, color)
-# LINE(start, end, width, color)
-# (will need to have algo to gen starts, ends, widthz based on angles desired and so on..)
-# ##BRANCHES##
-# LINE(start, end, width, color)
-# LINE(start, end, width, color)
-# ##LEAVES##
-# CIRCLE(x,y,radius,color)
-# CIRCLE(x,y,radius,color)
-
-# so gen rules code, draw rules code, and cross rules code
-# first make gen rules code!!
-
-
-

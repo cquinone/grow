@@ -31,6 +31,10 @@ EVENTS:
 	storm, have to treat acoordingly?
 	minigame during?
 
+PLANT GEN:
+	ask about what you like in a plant???? (for first one!!!)
+	for trunk splitting, if split bias angle towards left or right for each split (along that split)
+	continuance chance is higher lower on the tree (so less trunks so far generated)
 
 
 use tkinter to draw things on a canvas, randomize drawings in way that makes rando plant, then come up with rules to cross two drawings ..
@@ -58,7 +62,7 @@ attributes:
 
 experiment with drawing trunks of only the same length until past certain trunk num (i.e. height?)
 trunk splits? just like branch splits, but allow for literally one or two...
-initially pick subset of all possible rules according to say a type of tree? -> coniferous trees have smaler angles between successive trunks?
+initially pick subset of all possible settings according to say a type of tree? -> coniferous trees have smaler angles between successive trunks?
 want probably smoother sections ... longer trunks and lesser pieces? or tons, small angle changes?
 
 look into bezier.. generate trunks similarly save for now all yoou need is points? than draw bezier point by point by calculating paramteric rep. based on all points
