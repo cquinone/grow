@@ -40,6 +40,7 @@ def calc_corner_diffs(trunk):
 	c = -(b/a)*d
 	return c,d
 
+
 # for fruits and trunk, makes a color thats not too close to white (so as to appear on canvas)
 def gen_color():
 	r = rand.randint(0,255)
@@ -54,10 +55,60 @@ def gen_color():
 	return (r,g,b)
 
 
+def gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,last_trunk):
+	length = trunk_mag*rand.uniform(.6,1)
+	angle = rand.uniform(trunk_angle_min,trunk_angle_max)
+	#first trunk always points straight up
+	if id_index == 0:
+		angle = math.pi/2
+		y_start = 0
+		x_start = pic_width/2
+	if id_index != 0:
+		# start at end of last
+		x_start = last_trunk.x_end
+		y_start = last_trunk.y_end
+	
+	x_end = x_start+length*math.cos(angle)
+	y_end = y_start+length*math.sin(angle)	
+	width = int(trunk_base_width + 12*rand.uniform(.6,1)*(1/(1.12**i)))
+	trunk = line_piece("trunk",x_start,y_start,x_end,y_end,width,trunk_color,id_index)
+	return trunk
+
+
+def gen_branch(branch_mag,branch_angle_min,branch_angle_max,branch_width,which_trunk,branch_color,id_index):
+	#length = 60*rand.random()  ALSO SWITCH TO UNIFORM!
+	length = branch_mag
+	angle = rand.uniform(branch_angle_min,branch_angle_max)
+	# pick where along the trunk to place the branch
+	x_start = which_trunk.x_start
+	y_start = which_trunk.y_start
+	x_end = which_trunk.x_end
+	y_end = which_trunk.y_end
+	if x_end != x_start:
+		slope = (y_end-y_start)/(x_end-x_start)
+		b = y_start - slope*(x_start)
+		branch_x_start = rand.uniform(x_end, x_start)
+		branch_y_start = slope*(branch_x_start) + b
+		branch_y_end = y_start+length*math.sin(angle)
+		branch_x_end = x_start+length*math.cos(angle)
+	elif x_end == x_start:
+		r = rand.random()
+		branch_x_start = x_start
+		if r < .5:
+			branch_x_end = x_start + length
+		if r >= .5:
+			branch_x_end = x_start - length
+		branch_y_start = rand.uniform(y_end,y_start)
+		branch_y_end = branch_y_start
+
+	branch = line_piece("branch",branch_x_start,branch_y_start,branch_x_end,branch_y_end,branch_width,branch_color,id_index)
+	return branch
+
+
 # generate the text rules used to draw a tree png
 def gen_rules():
 	id_index = 0
-	rules = []
+	rules = [None]
 	trunk_color = gen_color()
 	branch_color = rand.choice(BROWNS)
 	
@@ -79,30 +130,19 @@ def gen_rules():
 	branch_width = 3
 
 	# generate trunk data
+	# first, number of trunks in whole tree
 	trunk_num = rand.randint(trunk_num_min,trunk_num_max)
-	# need to pick length of each one .. so make it a dict with each trunk with a length and angle(0 to pi)
-	for i in range(trunk_num):
-		length = trunk_mag*rand.uniform(.6,1)
-		angle = rand.uniform(trunk_angle_min,trunk_angle_max)
-		if i == 0:
-			angle = math.pi/2
-			y_start = 0
-			x_start = pic_width/2
+	total_trunks = trunk_num
 
-		if i != 0:
-			# start at end of last
-			x_start = x_end
-			y_start = y_end
+	while trunk_num > 0:
+		# first decide if doing a splitting
+		#if i > int(trunk_num/2):
+			# splitting code here
 
-		x_end = x_start+length*math.cos(angle)
-		y_end = y_start+length*math.sin(angle)	
-		width = int(trunk_base_width + 12*rand.uniform(.6,1)*(1/(1.12**i)))
-		print("TRUNK WIDTH: ", width)
-		rules.append(line_piece("trunk",x_start,y_start,x_end,y_end,width,trunk_color,id_index))
+		trunk = gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,rules[-1])
+		rules.append(trunk)
 		id_index = id_index + 1
-	
-	for trunk in rules:
-		print("TRUNK AT: ", trunk.x_start, trunk.y_start, " ", "ENDS AT: ", trunk.x_end, trunk.y_end, " ", "ID: ", trunk.identity)
+		trunk_num = trunk_num - 1
 
 	id_index = 0
 	# choose number of main branches to add
@@ -110,46 +150,18 @@ def gen_rules():
 	indexes = []  #which trunks already have a branch
 	# first set up a main branch
 	for i in range(branch_num):
-		#length = 60*rand.random()  ALSO SWITCH TO UNIFORM!
-		length = branch_mag
-		angle = rand.uniform(math.pi/6,5*(math.pi/6))
 		# pick which trunk
-		trunk_index = rand.randint(1,trunk_num)
+		trunk_index = rand.randint(1,total_trunks)
 		while (trunk_index in indexes):
-			trunk_index = rand.randint(1,trunk_num)
+			trunk_index = rand.randint(1,total_trunks)
 		which_trunk = rules[trunk_index-1]
-		# pick where along the trunk to place the branch
-		x_start = which_trunk.x_start
-		y_start = which_trunk.y_start
-		x_end = which_trunk.x_end
-		y_end = which_trunk.y_end
-		if x_end != x_start:
-			slope = (y_end-y_start)/(x_end-x_start)
-			b = y_start - slope*(x_start)
-			branch_x_start = rand.uniform(x_end, x_start)
-			branch_y_start = slope*(branch_x_start) + b
-			branch_y_end = y_start+length*math.sin(angle)
-			branch_x_end = x_start+length*math.cos(angle)
-		elif x_end == x_start:
-			r = rand.random()
-			branch_x_start = x_start
-			if r < .5:
-				branch_x_end = x_start + length
-			if r >= .5:
-				branch_x_end = x_start - length
-			branch_y_start = rand.uniform(y_end,y_start)
-			branch_y_end = branch_y_start
-
 		indexes.append(trunk_index)
-		# then branch from that branch, necessarily shorter, up to two?
-		# TEST BEFORE BRANCHING ON  BRANCHES
-		#branch_split = rand.randint(0,2)
-		#for j in branch_split:
-		#	angle = math.pi/2*rand.random()
-			# have to account for side from main branch!
-		rules.append(line_piece("branch",branch_x_start,branch_y_start,branch_x_end,branch_y_end,branch_width,branch_color,id_index))
+		# generate a branch
+		branch = gen_branch(branch_mag,branch_angle_min,branch_angle_max,branch_width,which_trunk,branch_color,id_index)
+		rules.append(branch)
 		id_index = id_index + 1
-		#print("BRANCH AT: ", rules[-1].x_start,rules[-1].y_start, " ", "ENDS AT: ", rules[-1].x_end,rules[-1].y_end)
+		# this makes main branches, add thinner / shorter branches from branches themselves!! 
+		# THAT CODE NEXT, WILL BE ANOTHER LOOP BUT OFFERS BRANCHES AS WHICH TRUNK
 	return rules
 
 

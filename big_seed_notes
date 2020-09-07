@@ -17,6 +17,8 @@ PLANT DISPLAY:
 	add stats below plant
 	Modify so picking which image is based on linking stage to loaded images for given plant
 	--> means taking all images from auto_draw, then throwing in class definition?
+	POSSIBLE: generate different versions with different amounts of fruits.. display accordingly
+	NOTE: possible to pre-render text for certain messages, store, and then throw out when neeed for smoother gameplay
 
 PLANT CROSS:
 	Track something like "health" stat secretly, and only mention when crossing plants
@@ -28,7 +30,7 @@ PLANT CROSS:
 			  draw some
 
 EVENTS:
-	storm, have to treat acoordingly?
+	storm, have to treat accordingly?
 	minigame during?
 
 PLANT GEN:
