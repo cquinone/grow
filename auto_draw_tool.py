@@ -55,6 +55,7 @@ def gen_color():
 	return (r,g,b)
 
 
+# generate trunk cooordinates and line object
 def gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,last_trunk):
 	length = trunk_mag*rand.uniform(.6,1)
 	angle = rand.uniform(trunk_angle_min,trunk_angle_max)
@@ -70,16 +71,18 @@ def gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_c
 	
 	x_end = x_start+length*math.cos(angle)
 	y_end = y_start+length*math.sin(angle)	
-	width = int(trunk_base_width + 12*rand.uniform(.6,1)*(1/(1.12**i)))
+	width = int(trunk_base_width + 8*rand.uniform(.6,1)*(1/(1.12**i)))
 	trunk = line_piece("trunk",x_start,y_start,x_end,y_end,width,trunk_color,id_index)
 	return trunk
 
 
+# generate branch coordinates and line object
 def gen_branch(branch_mag,branch_angle_min,branch_angle_max,branch_width,which_trunk,branch_color,id_index):
 	#length = 60*rand.random()  ALSO SWITCH TO UNIFORM!
 	length = branch_mag
 	angle = rand.uniform(branch_angle_min,branch_angle_max)
 	# pick where along the trunk to place the branch
+	# choose any x on trunk, then project along line defining trunk
 	x_start = which_trunk.x_start
 	y_start = which_trunk.y_start
 	x_end = which_trunk.x_end
@@ -116,8 +119,8 @@ def gen_rules():
 	# trunks first
 	trunk_num_min = 22
 	trunk_num_max = 40
-	trunk_mag = 14
-	trunk_base_width = 7
+	trunk_mag = 20
+	trunk_base_width = 1
 	trunk_angle_min = math.pi/4
 	trunk_angle_max = 3*(math.pi/4)
 	repeat_prob = .2
@@ -143,8 +146,8 @@ def gen_rules():
 		rules.append(trunk)
 		id_index = id_index + 1
 		trunk_num = trunk_num - 1
-
 	id_index = 0
+	rules.pop(0)
 	# choose number of main branches to add
 	branch_num = rand.randint(branch_num_min,branch_num_max)
 	indexes = []  #which trunks already have a branch
@@ -165,14 +168,15 @@ def gen_rules():
 	return rules
 
 
+# given the list of line objects to draw, do so, in the right order and adding corner fills
 def draw_rules(image1,draw,rules):
 	for i in range(len(rules)):
 		rule = rules[i]
 		color = rule.color
-		draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
-		# now also try filling gaps!
-		# for a trunk-trunk pair, get correct corners and construct filling polygon
 		if rule.name == "trunk":
+			draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
+			# now also try filling gaps!
+			# for a trunk-trunk pair, get correct corners and construct filling polygon
 			if i != len(rules)-1: #so we are not on the last rule
 				if rules[i+1].name  == "trunk": # if we are not on the last trunk (only doing pairs!!)
 					# can calc corners here
@@ -191,7 +195,13 @@ def draw_rules(image1,draw,rules):
 					p2 = [p1[0]+c,p1[1]+d]
 					p3 = [p1[0]+g,p1[1]+h]
 					draw.polygon([p1[0],p1[1],p2[0],p2[1],p3[0],p3[1]],fill=rule.color,outline=None)
-					#draw.line()
+
+	# split drawing trunks and branches to make sure branches are underneath trunks
+	for i in range(len(rules)):
+		rule = rules[i]
+		color = rule.color
+		if rule.name == "branch":
+			draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
 
 	return image1,draw
 
