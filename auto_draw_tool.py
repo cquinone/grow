@@ -123,7 +123,8 @@ def gen_rules():
 	trunk_base_width = 1
 	trunk_angle_min = math.pi/4
 	trunk_angle_max = 3*(math.pi/4)
-	repeat_prob = .2
+	repeat_prob = .2						#DONT FORGET THIS!
+	trunk_split_prob = .75
 	# then branches
 	branch_num_max = 8
 	branch_num_min = 4
@@ -133,19 +134,22 @@ def gen_rules():
 	branch_width = 3
 
 	# generate trunk data
-	# first, number of trunks in whole tree
+	# first pick number of trunks in whole tree
 	trunk_num = rand.randint(trunk_num_min,trunk_num_max)
-	total_trunks = trunk_num
-
-	while trunk_num > 0:
-		# first decide if doing a splitting
-		#if i > int(trunk_num/2):
-			# splitting code here
+	for i in range(trunk_num):
+		# decide if splitting --> far enough along and rand chance
+		if id_index > int(trunk_num/3) and rand.random() > trunk_split_prob:
+			break
 
 		trunk = gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,rules[-1])
 		rules.append(trunk)
 		id_index = id_index + 1
-		trunk_num = trunk_num - 1
+	# now generate splits and fill with remaining trunks
+	# number of possible splits --> leftover trunks/2
+	num_splits = rand.randint(1,int((trunk_num-i)/2))
+	for j in range(trunk_num-i):
+		# choose branch and split placement here!
+	
 	id_index = 0
 	rules.pop(0)
 	# choose number of main branches to add
@@ -154,9 +158,9 @@ def gen_rules():
 	# first set up a main branch
 	for i in range(branch_num):
 		# pick which trunk
-		trunk_index = rand.randint(1,total_trunks)
+		trunk_index = rand.randint(1,trunk_num)
 		while (trunk_index in indexes):
-			trunk_index = rand.randint(1,total_trunks)
+			trunk_index = rand.randint(1,trunk_num)
 		which_trunk = rules[trunk_index-1]
 		indexes.append(trunk_index)
 		# generate a branch
