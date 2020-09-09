@@ -55,6 +55,18 @@ def gen_color():
 	return (r,g,b)
 
 
+
+# return list of ints that describe continuances or splits on bracnhes/trunks
+def gen_split_list(leftover_trunks):
+	splits = []
+	while total <= leftover_trunks:
+		addition = rand.randint(1,2)
+		splits.append(addition)
+		total = total + addition
+	return splits
+
+
+
 # generate trunk cooordinates and line object
 def gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,last_trunk):
 	length = trunk_mag*rand.uniform(.6,1)
@@ -67,8 +79,7 @@ def gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_c
 	if id_index != 0:
 		# start at end of last
 		x_start = last_trunk.x_end
-		y_start = last_trunk.y_end
-	
+		y_start = last_trunk.y_end	
 	x_end = x_start+length*math.cos(angle)
 	y_end = y_start+length*math.sin(angle)	
 	width = int(trunk_base_width + 8*rand.uniform(.6,1)*(1/(1.12**i)))
@@ -103,7 +114,6 @@ def gen_branch(branch_mag,branch_angle_min,branch_angle_max,branch_width,which_t
 			branch_x_end = x_start - length
 		branch_y_start = rand.uniform(y_end,y_start)
 		branch_y_end = branch_y_start
-
 	branch = line_piece("branch",branch_x_start,branch_y_start,branch_x_end,branch_y_end,branch_width,branch_color,id_index)
 	return branch
 
@@ -114,7 +124,6 @@ def gen_rules():
 	rules = [None]
 	trunk_color = gen_color()
 	branch_color = rand.choice(BROWNS)
-	
 	# set up initial values that will be varied around randomly
 	# trunks first
 	trunk_num_min = 22
@@ -140,16 +149,16 @@ def gen_rules():
 		# decide if splitting --> far enough along and rand chance
 		if id_index > int(trunk_num/3) and rand.random() > trunk_split_prob:
 			break
-
 		trunk = gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,rules[-1])
 		rules.append(trunk)
 		id_index = id_index + 1
 	# now generate splits and fill with remaining trunks
-	# number of possible splits --> leftover trunks/2
-	num_splits = rand.randint(1,int((trunk_num-i)/2))
-	for j in range(trunk_num-i):
-		# choose branch and split placement here!
-	
+	#num_splits = rand.randint(1,int((trunk_num-i)/2))?
+	#gen list for each main split like 2,1,1,2,1,1,1,2..
+	left_list = gen_split_list(trunk_num-i)
+	right_list = gen_split_list(trunk_num-i)
+	#now randomly (left or right) implement one list decision, and so on?
+
 	id_index = 0
 	rules.pop(0)
 	# choose number of main branches to add
