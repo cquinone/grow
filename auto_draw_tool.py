@@ -158,6 +158,7 @@ def gen_rules():
 	left_list = gen_split_list(trunk_num-i)
 	right_list = gen_split_list(trunk_num-i)
 	#now randomly (left or right) implement one list decision, and so on?
+	#check last decision --> affects next angle and whether choosing R or L
 
 	id_index = 0
 	rules.pop(0)
