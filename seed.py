@@ -297,8 +297,8 @@ img_dict = {"seed": seed, "bud": bud}
 
 
 #timer buffers
-first_screen_buffer = 200
-second_screen_buffer = 350
+first_screen_buffer = 20
+second_screen_buffer = 35
 
 #first draw check?
 pg.display.update()
@@ -347,8 +347,10 @@ while not done:
         day_change = False
         # if this is the first time you're here, reset screen
         if response_start == False:
-            screen.fill(WHITE)
             screen.blit(background, [0,0])
+            screen.blit(curr_level.plant.img, (plant_disp_x, plant_disp_y))
+            day_surface = font.render("DAY: "+str(curr_level.day), True, BLACK)
+            screen.blit(day_surface, (92, 60))
             pg.display.update()
             response_start = True
 
@@ -360,40 +362,32 @@ while not done:
             pg.event.pump()
             day_change = response(cmd, curr_level, stage_dict, img_dict)
             cmd  = ""
-
-        # Blit background image first (so below everything else), this is also serving as the "clear" everything function
-        screen.blit(background, [0,0])
-        draw("img", curr_level.plant.img, [plant_disp_x,plant_disp_y])
-        #pg.display.update()
-
-        # Blit Day counter, render only if day has changed or not rendered yet
-        if "day_surface" not in locals() and "day_surface" not in globals():
-            print("doing render")
-            day_surface = font.render("DAY: "+str(curr_level.day), True, BLACK)
-        else:
+            #  now that enter has been pressed and a response drawn and then cleared, need to redraw plant and day!
+            # Blit Day counter, render only if day has changed or not rendered yet
             if day_change:
-                print("doing render")
-                day_surface = font.render("DAY: "+str(curr_level.day), True, BLACK)
-        screen.blit(day_surface, (92, 60))
-        text_w , text_h = font.size("DAY: "+str(curr_level.day))
-        pg.display.update(pg.Rect(92, 60, text_w, text_h))
-        
-        # now always draw plant
-        screen.blit(curr_level.plant.img, (plant_disp_x, plant_disp_y))
+        	        day_surface = font.render("DAY: "+str(curr_level.day), True, BLACK)
+
+            screen.blit(day_surface, (92, 60))
+            text_w , text_h = font.size("DAY: "+str(curr_level.day))
+            pg.display.update(pg.Rect(92, 60, text_w, text_h))
+        	# Blit plant again!
+            draw("img", curr_level.plant.img, [plant_disp_x,plant_disp_y])
 
         # Blit command as it's being typed
         if not enter:
             text_w , text_h = font.size(cmd)
+            pg.draw.rect(screen,WHITE,(input_box.x+5, input_box.y+5, text_w+40, text_h))
             screen.blit(cmd_surface, (input_box.x+5, input_box.y+5))
             #update cursor position
             old_x = cursor_box.x
             cursor_box.x = cursor_box.x + text_w+5
-            # Blit the cursor if on non-flicker
+            # Blit the cursor depending on flicker
             if cursor_timer < 8:
                 pg.draw.rect(screen, BLUE, cursor_box)
                 cursor_timer = cursor_timer + 1
             else:
                 cursor_timer = cursor_timer + 1
+                pg.draw.rect(screen, WHITE, cursor_box)
                 if cursor_timer > 16:       #basically saying: dont draw for X frames, makes flicker effect
                     cursor_timer = 0  
             pg.display.update(pg.Rect(input_box.x+5, input_box.y+5, text_w+40, text_h))  
