@@ -21,7 +21,7 @@ GREENS = [leaf,baby_turtle,jungle,amoeba]
 
 
 class line_piece():
-    def __init__(self,name,x_start,y_start,x_end,y_end,width,color,identity):
+    def __init__(self,name,x_start,y_start,x_end,y_end,width,color,identity,used):
     	self.name = name
     	self.x_start = x_start
     	self.y_start = y_start
@@ -30,6 +30,7 @@ class line_piece():
     	self.width = width
     	self.color = color
     	self.identity = identity
+    	self.used = used
 
 
 def calc_corner_diffs(trunk):
@@ -59,8 +60,12 @@ def gen_color():
 # return list of ints that describe continuances or splits on bracnhes/trunks
 def gen_split_list(leftover_trunks):
 	splits = []
+	total = 0
 	while total <= leftover_trunks:
-		addition = rand.randint(1,2)
+		if total != 0:
+			addition = rand.randint(1,2)
+		elif total == 0:
+			addition = 2
 		splits.append(addition)
 		total = total + addition
 	return splits
@@ -68,7 +73,7 @@ def gen_split_list(leftover_trunks):
 
 
 # generate trunk cooordinates and line object
-def gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,last_trunk):
+def gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,last_trunk,is_used=True):
 	length = trunk_mag*rand.uniform(.6,1)
 	angle = rand.uniform(trunk_angle_min,trunk_angle_max)
 	#first trunk always points straight up
@@ -82,13 +87,13 @@ def gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_c
 		y_start = last_trunk.y_end	
 	x_end = x_start+length*math.cos(angle)
 	y_end = y_start+length*math.sin(angle)	
-	width = int(trunk_base_width + 8*rand.uniform(.6,1)*(1/(1.12**i)))
-	trunk = line_piece("trunk",x_start,y_start,x_end,y_end,width,trunk_color,id_index)
+	width = int(trunk_base_width + 8*rand.uniform(.6,1)*(1/(1.07**id_index)))
+	trunk = line_piece("trunk",x_start,y_start,x_end,y_end,width,trunk_color,id_index,is_used)
 	return trunk
 
 
 # generate branch coordinates and line object
-def gen_branch(branch_mag,branch_angle_min,branch_angle_max,branch_width,which_trunk,branch_color,id_index):
+def gen_branch(branch_mag,branch_angle_min,branch_angle_max,branch_width,which_trunk,branch_color,id_index,is_used=True):
 	#length = 60*rand.random()  ALSO SWITCH TO UNIFORM!
 	length = branch_mag
 	angle = rand.uniform(branch_angle_min,branch_angle_max)
@@ -114,7 +119,7 @@ def gen_branch(branch_mag,branch_angle_min,branch_angle_max,branch_width,which_t
 			branch_x_end = x_start - length
 		branch_y_start = rand.uniform(y_end,y_start)
 		branch_y_end = branch_y_start
-	branch = line_piece("branch",branch_x_start,branch_y_start,branch_x_end,branch_y_end,branch_width,branch_color,id_index)
+	branch = line_piece("branch",branch_x_start,branch_y_start,branch_x_end,branch_y_end,branch_width,branch_color,id_index,is_used)
 	return branch
 
 
@@ -127,13 +132,13 @@ def gen_rules():
 	# set up initial values that will be varied around randomly
 	# trunks first
 	trunk_num_min = 22
-	trunk_num_max = 40
+	trunk_num_max = 50
 	trunk_mag = 20
 	trunk_base_width = 1
 	trunk_angle_min = math.pi/4
 	trunk_angle_max = 3*(math.pi/4)
 	repeat_prob = .2						#DONT FORGET THIS!
-	trunk_split_prob = .75
+	trunk_split_prob = .4
 	# then branches
 	branch_num_max = 8
 	branch_num_min = 4
@@ -147,21 +152,38 @@ def gen_rules():
 	trunk_num = rand.randint(trunk_num_min,trunk_num_max)
 	for i in range(trunk_num):
 		# decide if splitting --> far enough along and rand chance
-		if id_index > int(trunk_num/3) and rand.random() > trunk_split_prob:
+		if id_index > int(trunk_num/6.0) and rand.random() > trunk_split_prob:
 			break
 		trunk = gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,rules[-1])
 		rules.append(trunk)
 		id_index = id_index + 1
 	# now generate splits and fill with remaining trunks
-	#num_splits = rand.randint(1,int((trunk_num-i)/2))?
-	#gen list for each main split like 2,1,1,2,1,1,1,2..
-	left_list = gen_split_list(trunk_num-i)
-	right_list = gen_split_list(trunk_num-i)
-	#now randomly (left or right) implement one list decision, and so on?
-	#check last decision --> affects next angle and whether choosing R or L
+	# possible num_splits = rand.randint(1,int((trunk_num-i)/2))
+	# generate list of branch structure like 1,2,1.. place randomly
+	rules.pop(0)
+	split_list = gen_split_list(trunk_num-i)
+	chosen_trunk = rules[-1]
+	for k in range(len(split_list)):
+		if split_list[k] == 1:
+			chosen_trunk.used = True
+			trunk = gen_trunk(math.pi/8.0 + rand.uniform(0,.4),math.pi/8.0 - rand.uniform(0,.4),trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
+			rules.append(trunk)
+			id_index = id_index + 1 
+		if split_list[k] == 2:
+			chosen_trunk.used = True
+			trunk_r = gen_trunk(math.pi/8.0 + rand.uniform(0,.4),math.pi/8.0 - rand.uniform(0,.4),trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
+			id_index = id_index + 1
+			trunk_l = gen_trunk(7*math.pi/8.0 + rand.uniform(0,.4),7*math.pi/8.0 - rand.uniform(0,.4),trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
+			rules.append(trunk_l)
+			rules.append(trunk_r)
+			id_index = id_index + 1
+		unused_trunks = []
+		for try_trunk in rules:
+			if try_trunk.used == False:
+				unused_trunks.append(try_trunk)
+		chosen_trunk = rand.choice(unused_trunks)
 
 	id_index = 0
-	rules.pop(0)
 	# choose number of main branches to add
 	branch_num = rand.randint(branch_num_min,branch_num_max)
 	indexes = []  #which trunks already have a branch
@@ -177,8 +199,6 @@ def gen_rules():
 		branch = gen_branch(branch_mag,branch_angle_min,branch_angle_max,branch_width,which_trunk,branch_color,id_index)
 		rules.append(branch)
 		id_index = id_index + 1
-		# this makes main branches, add thinner / shorter branches from branches themselves!! 
-		# THAT CODE NEXT, WILL BE ANOTHER LOOP BUT OFFERS BRANCHES AS WHICH TRUNK
 	return rules
 
 
@@ -227,9 +247,6 @@ def create_tree(filename):
 	image1 = Image.new("RGB", (pic_width, pic_height), white)
 	draw = ImageDraw.Draw(image1)
 
-	image2 = Image.new("RGB", (pic_width, pic_height), white)
-	draw2 = ImageDraw.Draw(image2)
-
 	# gen rules code
 	rules = gen_rules()
 
@@ -239,7 +256,6 @@ def create_tree(filename):
 	# PIL image can be saved as .png .jpg .gif or .bmp file (among others)
 	#filename = "tree.png"
 	image1.save(filename+".png")
-	image2.save("other.png")
 
 
 for i in range(1,2):
