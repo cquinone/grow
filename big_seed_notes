@@ -1,4 +1,14 @@
- 
+GEN DISPLAY:
+	change text display so as to use PRE-RENDERED stuff and not re-render same junk all the time
+	(like commands, not a command saying, etc.)
+	possible addition of renders?? --> speeds up simulation solidly...
+	only render day after a response that changes day? ---> return from response if day changes, then render, otherwise just disp day_surf
+	possibly move day check that renders final message out of response? kinda makes sense now
+	^ also content to be pre-rendered
+	check if plant needs to be drawn as much as is? and why draw function for imgs again...
+	does plant itslef ever get updated? (would get captured in full screen update i suppose)
+
+
 STORE:
 	Add animation on storeowner question
 
@@ -37,6 +47,13 @@ PLANT GEN:
 	ask about what you like in a plant???? (for first one!!!)
 	for trunk splitting, if split bias angle towards left or right for each split (along that split)
 	continuance chance is higher lower on the tree (so less trunks so far generated)
+	CRAZY POSSIBLE: take input in beginning on first plant, given input, modify numbers so that "type" or plant is produced...
+					would need hard limits on width and height... has to fit in already set up plant box
+
+	ways to vary default: lower branching, stop branching on one half (set one to used!), randomly set noeds to used for less dense branches
+						  add continuance thing for strighter trees, lower possible branching, change function for higher thinning
+						  change distribution from uniform length vary to extreme / based on index, add color gradient with height
+						  cut splitting and allow only side branches?
 
 
 use tkinter to draw things on a canvas, randomize drawings in way that makes rando plant, then come up with rules to cross two drawings ..

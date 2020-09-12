@@ -231,11 +231,11 @@ def draw_rules(image1,draw,rules):
 					draw.polygon([p1[0],p1[1],p2[0],p2[1],p3[0],p3[1]],fill=rule.color,outline=None)
 
 	# split drawing trunks and branches to make sure branches are underneath trunks
-	for i in range(len(rules)):
-		rule = rules[i]
-		color = rule.color
-		if rule.name == "branch":
-			draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
+	#for i in range(len(rules)):
+	#	rule = rules[i]
+	#	color = rule.color
+	#	if rule.name == "branch":
+	#		draw.line([rule.x_start,rule.y_start,rule.x_end,rule.y_end],color,rule.width)
 
 	return image1,draw
 

@@ -99,6 +99,9 @@ def store_check(event):
 # response function takes cmd, level (which contains screen data / plant data) and responds to given command with drawing
 # and stats update
 def response(cmd, curr_level, stage_dict, img_dict):
+    # track day changes
+    old_day  = curr_level.day
+
     # block input during responses
     pg.event.set_blocked(pg.KEYDOWN)
     
@@ -239,6 +242,8 @@ def response(cmd, curr_level, stage_dict, img_dict):
     screen.blit(background, [0,0])
     pg.display.update()
 
+    return old_day < curr_level.day
+
 
 # test auto_draw
 #auto_draw.create_tree('first_tree')
@@ -339,6 +344,7 @@ while not done:
 
     # once past intro screen and naming first plant
     if not intro and not name_scr:
+        day_change = False
         # if this is the first time you're here, reset screen
         if response_start == False:
             screen.fill(WHITE)
@@ -352,7 +358,7 @@ while not done:
             pg.display.update(cover_box)
             # pump events so drawing works?
             pg.event.pump()
-            response(cmd, curr_level, stage_dict, img_dict)
+            day_change = response(cmd, curr_level, stage_dict, img_dict)
             cmd  = ""
 
         # Blit background image first (so below everything else), this is also serving as the "clear" everything function
@@ -360,8 +366,14 @@ while not done:
         draw("img", curr_level.plant.img, [plant_disp_x,plant_disp_y])
         #pg.display.update()
 
-        # Blit Day counter
-        day_surface = font.render("DAY: "+str(curr_level.day), True, BLACK)
+        # Blit Day counter, render only if day has changed or not rendered yet
+        if "day_surface" not in locals() and "day_surface" not in globals():
+            print("doing render")
+            day_surface = font.render("DAY: "+str(curr_level.day), True, BLACK)
+        else:
+            if day_change:
+                print("doing render")
+                day_surface = font.render("DAY: "+str(curr_level.day), True, BLACK)
         screen.blit(day_surface, (92, 60))
         text_w , text_h = font.size("DAY: "+str(curr_level.day))
         pg.display.update(pg.Rect(92, 60, text_w, text_h))
