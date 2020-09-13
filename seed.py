@@ -99,6 +99,9 @@ def store_check(event):
 # response function takes cmd, level (which contains screen data / plant data) and responds to given command with drawing
 # and stats update
 def response(cmd, curr_level, stage_dict, img_dict):
+    # assume doing something that needs FULL clearing
+    not_clear = False
+
     # track day changes
     old_day  = curr_level.day
 
@@ -129,8 +132,11 @@ def response(cmd, curr_level, stage_dict, img_dict):
             draw("text",rsp,[8,text_vert])
             text_vert = text_vert+20
 
-        # delay after message end, before bkg clearing happens
+        # delay after message end, then clear
         pg.time.wait(2200)
+        pg.draw.rect(screen, WHITE, (input_box.x+8,input_box.y+5,input_box.x+8+250,input_box.y+5+60))
+        pg.display.update(pg.Rect(input_box.x+8,input_box.y+5,input_box.x+8+250,input_box.y+5+60))      # magic numbers for full command list
+        not_clear = True
 
     if cmd == "q" or cmd == "quit":
         click = False
@@ -223,6 +229,10 @@ def response(cmd, curr_level, stage_dict, img_dict):
         rsp =  cmd+" is not an available command"        
         draw("text",rsp,[8,5])
         pg.time.wait(2000)
+        text_w , text_h = font.size(rsp)
+        pg.draw.rect(screen, WHITE, (input_box.x+8,input_box.y+5,input_box.x+8+text_w,input_box.y+5+text_h))
+        pg.display.update(pg.Rect(input_box.x+8,input_box.y+5,input_box.x+8+text_w,input_box.y+5+text_h))
+        not_clear = True
 
     # day has gone by, update plants and print day end message if a day has gone by
     if old_day < curr_level.day:
@@ -239,8 +249,9 @@ def response(cmd, curr_level, stage_dict, img_dict):
     # now re-allow input as repsonse is over
     pg.event.set_allowed(pg.KEYDOWN)
     # Blit background image first (so below everything else), this is also serving as the "clear" everything function
-    screen.blit(background, [0,0])
-    pg.display.update()
+    if not not_clear:	
+    	screen.blit(background, [0,0])
+    	pg.display.update()
 
     return old_day < curr_level.day
 
@@ -426,7 +437,7 @@ while not done:
             # update cursor position and save
             old_x = cursor_box.x
             cursor_box.x = cursor_box.x + text_w+5
-            # Blit the cursor if on non-flicker
+            # Blit the cursor depending on flicker
             if cursor_timer < 8:
                 pg.draw.rect(screen, BLUE, cursor_box)
                 cursor_timer = cursor_timer + 1
