@@ -219,7 +219,7 @@ def response(cmd, curr_level, stage_dict, img_dict):
                     if option == "exit":
                         click = True
                     elif option == "propane":
-                        pg.time.wait(1000)
+                        pg.time.wait(500)
                         draw("img", textbox, [200,150])
                         draw("text", "Added Propane to inventory!", [220,80], fonttype="bigfont")
                         pg.time.wait(2000)
