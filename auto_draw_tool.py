@@ -5,8 +5,8 @@ import math
 import sys
 
 
-pic_width = 500
-pic_height = 500
+pic_width = 480
+pic_height = 600
 white = (255, 255, 255)
 choco = (210,105,30)
 sienna = (160,82,45)
@@ -58,12 +58,23 @@ def gen_color():
 
 
 # return list of ints that describe continuances or splits on bracnhes/trunks
-def gen_split_list(leftover_trunks):
+def gen_split_list(leftover_trunks,reach_type):
 	splits = []
 	total = 0
 	while total <= leftover_trunks:
 		if total != 0:
-			addition = rand.randint(1,2)
+			# we want more likely 1 for total less than leftover_trunks...
+			# so 1/(left_over - total) goes from 1/L to ... 1 (then infin)..
+			# MAKE THIS SOME HOW OPTIONAL ---> SO BRANCHES CAN BE HIGH ON TREE, FOR A TREE TYPE!!!!
+			# when off, just randint(1,2) once total != 0
+			# when on, first split continues for a bit to make it more "tree-like"
+			if total < leftover_trunks and not reach_type:
+				if rand.random() < .1+1/math.sqrt(leftover_trunks - total):
+					addition = rand.randint(1,2)
+				else:	
+					addition = 1
+			else:
+				addition = rand.randint(1,2)
 		elif total == 0:
 			addition = 2
 		splits.append(addition)
@@ -76,6 +87,12 @@ def gen_split_list(leftover_trunks):
 def gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,last_trunk,is_used=True):
 	length = trunk_mag*rand.uniform(.6,1)
 	angle = rand.uniform(trunk_angle_min,trunk_angle_max)
+	# above is naive, we want to avoid straight up mooostly, so bend distribution towards edges, using min and max
+	# but, only do this is pi/2 included in range of max and min! (so we can use this func to do semi specific angle trunk)
+	if math.pi/2 < trunk_angle_max and math.pi/2 > trunk_angle_min:	
+		angle1 = rand.uniform(trunk_angle_min,5*(math.pi)/12)
+		angle2 = rand.uniform(7*(math.pi)/12,trunk_angle_max)
+		angle = rand.choice([angle1,angle2])
 	#first trunk always points straight up
 	if id_index == 0:
 		angle = math.pi/2
@@ -135,10 +152,12 @@ def gen_rules():
 	trunk_num_max = 50
 	trunk_mag = 20
 	trunk_base_width = 1
-	trunk_angle_min = math.pi/4
-	trunk_angle_max = 3*(math.pi/4)
+	trunk_angle_min = math.pi/6 #math.pi/4
+	trunk_angle_max = 5*(math.pi/6) #3*(math.pi/4)
 	repeat_prob = .2						#DONT FORGET THIS!
-	trunk_split_prob = .4
+	trunk_split_prob = .4	# probability to split once minimum trunks generated met
+	trunk_split_factor = 5  # what ratio of trunks need to be met to start splitting (so 2 means 1/2)
+	reach_type = False # set to true if you want to split branches more than spread higher
 	# then branches
 	branch_num_max = 8
 	branch_num_min = 4
@@ -152,7 +171,7 @@ def gen_rules():
 	trunk_num = rand.randint(trunk_num_min,trunk_num_max)
 	for i in range(trunk_num):
 		# decide if splitting --> far enough along and rand chance
-		if id_index > int(trunk_num/6.0) and rand.random() > trunk_split_prob:
+		if id_index > int(trunk_num/trunk_split_factor) and rand.random() > trunk_split_prob:
 			break
 		trunk = gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,rules[-1])
 		rules.append(trunk)
@@ -161,19 +180,19 @@ def gen_rules():
 	# possible num_splits = rand.randint(1,int((trunk_num-i)/2))
 	# generate list of branch structure like 1,2,1.. place randomly
 	rules.pop(0)
-	split_list = gen_split_list(trunk_num-i)
+	split_list = gen_split_list(trunk_num-i,reach_type)
 	chosen_trunk = rules[-1]
 	for k in range(len(split_list)):
 		if split_list[k] == 1:
 			chosen_trunk.used = True
-			trunk = gen_trunk(math.pi/8.0 + rand.uniform(0,.4),math.pi/8.0 - rand.uniform(0,.4),trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
+			trunk = gen_trunk(math.pi/(1.1),0,trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
 			rules.append(trunk)
 			id_index = id_index + 1 
 		if split_list[k] == 2:
 			chosen_trunk.used = True
-			trunk_r = gen_trunk(math.pi/8.0 + rand.uniform(0,.4),math.pi/8.0 - rand.uniform(0,.4),trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
+			trunk_r = gen_trunk(math.pi/8.0 + rand.uniform(0,.4),math.pi/8.0 - rand.uniform(0,.3),trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
 			id_index = id_index + 1
-			trunk_l = gen_trunk(7*math.pi/8.0 + rand.uniform(0,.4),7*math.pi/8.0 - rand.uniform(0,.4),trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
+			trunk_l = gen_trunk(7*math.pi/8.0 + rand.uniform(0,.3),7*math.pi/8.0 - rand.uniform(0,.4),trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
 			rules.append(trunk_l)
 			rules.append(trunk_r)
 			id_index = id_index + 1
