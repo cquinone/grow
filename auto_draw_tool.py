@@ -82,7 +82,6 @@ def gen_split_list(leftover_trunks,reach_type):
 	return splits
 
 
-
 # generate trunk cooordinates and line object
 def gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,last_trunk,is_used=True):
 	length = trunk_mag*rand.uniform(.6,1)
