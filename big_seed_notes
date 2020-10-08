@@ -23,12 +23,14 @@ EVOLVE:
 
 
 PLANT DISPLAY:
-	Need mask for plants, so if click on plants, can gather fruit?
+	Need mask for plants, so if click on plants, can gather fruit? possible scissor animation via mouse.. or no
+	fruit p0ints should ends of branches ... this could be ends of trunks too though
 	add stats below plant
 	Modify so picking which image is based on linking stage to loaded images for given plant
 	--> means taking all images from auto_draw, then throwing in class definition?
 	POSSIBLE: generate different versions with different amounts of fruits.. display accordingly
 	NOTE: possible to pre-render text for certain messages, store, and then throw out when neeed for smoother gameplay
+
 
 PLANT CROSS:
 	Track something like "health" stat secretly, and only mention when crossing plants
@@ -54,6 +56,9 @@ PLANT GEN:
 						  add continuance thing for strighter trees, lower possible branching, change function for higher thinning
 						  change distribution from uniform length vary to extreme / based on index, add color gradient with height
 						  cut splitting and allow only side branches?
+						  trunks should be allowed to be thicker on occasion -- thickness tied to trunk num?
+
+	POSIBLE: lower trunk num in general, let branches do fine stuff
 
 
 use tkinter to draw things on a canvas, randomize drawings in way that makes rando plant, then come up with rules to cross two drawings ..

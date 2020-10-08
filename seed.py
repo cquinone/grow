@@ -82,6 +82,15 @@ def draw(type,rsp,pos, fonttype="font", color=pg.Color('SALMON')):
     pg.event.pump()
 
 
+# rotate an image around its center
+def rot_center(image, angle):
+    center = image.get_rect().center
+    rotated_image = pg.transform.rotate(image, angle)
+    #new_rect = rotated_image.get_rect(center = center)
+
+    return rotated_image#, new_rect
+
+
 # extra function to determine action from click on store
 def store_check(event):
     option = ""
@@ -297,8 +306,10 @@ sun  = pg.image.load("pics/sun2.png").convert_alpha()
 sun = pg.transform.scale(sun, [int(.72*252), int(.72*252)])
 ray = pg.image.load("pics/ray.png").convert_alpha()
 ray_cover = pg.image.load("pics/ray_cover.png").convert_alpha()
-seed = pg.image.load("pics/seed.png").convert_alpha()
-seed = pg.transform.scale(seed, [int(.6*99),int(.6*126)])
+#seed = pg.image.load("pics/seed.png").convert_alpha()
+seed = pg.image.load("tree_1.png").convert_alpha()
+#seed = rot_center(seed,180)
+#seed = pg.transform.scale(seed, [int(.6*99),int(.6*126)])
 quit_ask = pg.image.load("pics/test_ask.png").convert_alpha()
 store = pg.image.load("pics/store_test.png").convert_alpha()
 textbox = pg.image.load("pics/textbox_copy.png").convert_alpha()
@@ -316,8 +327,8 @@ pg.display.update()
 
 # set up first plant, set as plant in focus
 first_plant = Plant("",seed)
-plant_disp_x = 620  # coords for basic plant display
-plant_disp_y = 250
+plant_disp_x = 420  # coords for basic plant display
+plant_disp_y = 150
 
 #initial values
 curr_level = Level()
@@ -454,8 +465,8 @@ while not done:
             # once named, blit name, then announcements
             name_surface = font.render(curr_level.plant.name, True, cmd_color)
             screen.blit(name_surface, (input_box.x+5, input_box.y+5))
-            draw("text", curr_level.plant.name+" was planted:", [510,40], color=GREEN)
             draw("img", curr_level.plant.img, [plant_disp_x,plant_disp_y])
+            draw("text", curr_level.plant.name+" was planted:", [510,40], color=GREEN)
             pg.time.wait(1100)
             draw("text", "Treat it well!", [510,250], color=GREEN)
             pg.time.wait(1700)

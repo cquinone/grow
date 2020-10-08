@@ -5,8 +5,8 @@ import math
 import sys
 
 
-pic_width = 480
-pic_height = 600
+pic_width = 380
+pic_height = 300
 white = (255, 255, 255)
 choco = (210,105,30)
 sienna = (160,82,45)
@@ -56,7 +56,6 @@ def gen_color():
 	return (r,g,b)
 
 
-
 # return list of ints that describe continuances or splits on bracnhes/trunks
 def gen_split_list(leftover_trunks,reach_type):
 	splits = []
@@ -66,10 +65,10 @@ def gen_split_list(leftover_trunks,reach_type):
 			# we want more likely 1 for total less than leftover_trunks...
 			# so 1/(left_over - total) goes from 1/L to ... 1 (then infin)..
 			# MAKE THIS SOME HOW OPTIONAL ---> SO BRANCHES CAN BE HIGH ON TREE, FOR A TREE TYPE!!!!
-			# when off, just randint(1,2) once total != 0
-			# when on, first split continues for a bit to make it more "tree-like"
-			if total < leftover_trunks and not reach_type:
-				if rand.random() < .1+1/math.sqrt(leftover_trunks - total):
+			# when off, (reach_type = false) just randint(1,2) once total != 0
+			# when on, (reach_type = true) more likely to continue first split before splitting again
+			if total < leftover_trunks and reach_type:
+				if rand.random() > .1+1/math.sqrt(leftover_trunks - total):
 					addition = rand.randint(1,2)
 				else:	
 					addition = 1
@@ -83,15 +82,17 @@ def gen_split_list(leftover_trunks,reach_type):
 
 
 # generate trunk cooordinates and line object
-def gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,last_trunk,is_used=True):
-	length = trunk_mag*rand.uniform(.6,1)
+def gen_trunk(trunk_angle_max,trunk_angle_min,straight_type,trunk_base_width,trunk_mag,trunk_color,id_index,last_trunk,is_used=True):
+	length = trunk_mag #+ 8*(1/(1.1**id_index))
+	print("id_index, length: ", id_index, length)
 	angle = rand.uniform(trunk_angle_min,trunk_angle_max)
 	# above is naive, we want to avoid straight up mooostly, so bend distribution towards edges, using min and max
 	# but, only do this is pi/2 included in range of max and min! (so we can use this func to do semi specific angle trunk)
-	if math.pi/2 < trunk_angle_max and math.pi/2 > trunk_angle_min:	
-		angle1 = rand.uniform(trunk_angle_min,5*(math.pi)/12)
-		angle2 = rand.uniform(7*(math.pi)/12,trunk_angle_max)
-		angle = rand.choice([angle1,angle2])
+	# turn this off for a pine tree like angle min/max
+	if math.pi/2 < trunk_angle_max and math.pi/2 > trunk_angle_min and not straight_type:	
+		angle_low = rand.uniform(trunk_angle_min,5*(math.pi)/12)
+		angle_high = rand.uniform(7*(math.pi)/12,trunk_angle_max)
+		angle = rand.choice([angle_low,angle_high])
 	#first trunk always points straight up
 	if id_index == 0:
 		angle = math.pi/2
@@ -140,7 +141,7 @@ def gen_branch(branch_mag,branch_angle_min,branch_angle_max,branch_width,which_t
 
 
 # generate the text rules used to draw a tree png
-def gen_rules():
+def gen_rules(reach_type):
 	id_index = 0
 	rules = [None]
 	trunk_color = gen_color()
@@ -150,20 +151,23 @@ def gen_rules():
 	trunk_num_min = 22
 	trunk_num_max = 50
 	trunk_mag = 20
-	trunk_base_width = 1
-	trunk_angle_min = math.pi/6 #math.pi/4
-	trunk_angle_max = 5*(math.pi/6) #3*(math.pi/4)
+	trunk_base_width = 2
+	trunk_angle_min = 5*(math.pi)/12 #math.pi/6 #math.pi/4
+	trunk_angle_max = 7*(math.pi)/12 #5*(math.pi/6) #3*(math.pi/4)
 	repeat_prob = .2						#DONT FORGET THIS!
-	trunk_split_prob = .4	# probability to split once minimum trunks generated met
-	trunk_split_factor = 5  # what ratio of trunks need to be met to start splitting (so 2 means 1/2)
-	reach_type = False # set to true if you want to split branches more than spread higher
-	# then branches
+	trunk_split_prob = .02	# probability to split once minimum trunks generated met
+	trunk_split_factor = 6  # what ratio of trunks need to be met to start splitting (so 2 means 1/2)
+	#reach_type = True # set to true if you want to split branches more than spread higher
+	reach_type = reach_type
+	straight_type = False
+	# now branch settings
 	branch_num_max = 8
 	branch_num_min = 4
 	branch_mag = 30
 	branch_angle_min = math.pi/6
 	branch_angle_max = 5*(math.pi/6)
 	branch_width = 3
+	# IN MAKING SETS MAY NEED TO ADJUST MAG AND MAG SCALING TO NOT GO OUT OF BOUNDS!
 
 	# generate trunk data
 	# first pick number of trunks in whole tree
@@ -172,7 +176,7 @@ def gen_rules():
 		# decide if splitting --> far enough along and rand chance
 		if id_index > int(trunk_num/trunk_split_factor) and rand.random() > trunk_split_prob:
 			break
-		trunk = gen_trunk(trunk_angle_max,trunk_angle_min,trunk_base_width,trunk_mag,trunk_color,id_index,rules[-1])
+		trunk = gen_trunk(trunk_angle_max,trunk_angle_min,straight_type,trunk_base_width,trunk_mag,trunk_color,id_index,rules[-1])
 		rules.append(trunk)
 		id_index = id_index + 1
 	# now generate splits and fill with remaining trunks
@@ -184,14 +188,14 @@ def gen_rules():
 	for k in range(len(split_list)):
 		if split_list[k] == 1:
 			chosen_trunk.used = True
-			trunk = gen_trunk(math.pi/(1.1),0,trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
+			trunk = gen_trunk(math.pi/(1.1),0,False,trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
 			rules.append(trunk)
 			id_index = id_index + 1 
 		if split_list[k] == 2:
 			chosen_trunk.used = True
-			trunk_r = gen_trunk(math.pi/8.0 + rand.uniform(0,.4),math.pi/8.0 - rand.uniform(0,.3),trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
+			trunk_r = gen_trunk(math.pi/8.0 + rand.uniform(0,.4),math.pi/8.0 - rand.uniform(0,.3),False,trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
 			id_index = id_index + 1
-			trunk_l = gen_trunk(7*math.pi/8.0 + rand.uniform(0,.3),7*math.pi/8.0 - rand.uniform(0,.4),trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
+			trunk_l = gen_trunk(7*math.pi/8.0 + rand.uniform(0,.3),7*math.pi/8.0 - rand.uniform(0,.4),False,trunk_base_width,trunk_mag,trunk_color,id_index,chosen_trunk,False)
 			rules.append(trunk_l)
 			rules.append(trunk_r)
 			id_index = id_index + 1
@@ -258,7 +262,7 @@ def draw_rules(image1,draw,rules):
 	return image1,draw
 
 
-def create_tree(filename):
+def create_tree(filename,reach_type):
 	# AUTO DRAW CODE THAT CREATES AND SAVES PNG 
 	# PIL create an empty image and draw object to draw on
 	# memory only, not visible
@@ -266,15 +270,21 @@ def create_tree(filename):
 	draw = ImageDraw.Draw(image1)
 
 	# gen rules code
-	rules = gen_rules()
+	rules = gen_rules(reach_type)
 
 	# gen drawing from rules
 	image1, draw = draw_rules(image1, draw, rules)
+
+	image1 = image1.rotate(180, Image.NEAREST, expand = 1)
 	
 	# PIL image can be saved as .png .jpg .gif or .bmp file (among others)
 	#filename = "tree.png"
 	image1.save(filename+".png")
 
 
-for i in range(1,2):
-	create_tree("tree_"+str(i))
+create_tree("tree_true1",True)
+create_tree("tree_true2",True)
+create_tree("tree_true3",True)
+create_tree("tree_false1",False)
+create_tree("tree_false2",False)
+create_tree("tree_false3",False)
