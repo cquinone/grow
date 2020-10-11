@@ -5,8 +5,8 @@ import math
 import sys
 
 
-pic_width = 380
-pic_height = 200
+pic_width = 280
+pic_height = 215
 white = (255, 255, 255)
 choco = (210,105,30)
 sienna = (160,82,45)
@@ -159,7 +159,7 @@ def gen_rules(reach_type):
 	trunk_split_factor = 6  # what ratio of trunks need to be met to start splitting (so 2 means 1/2)
 	#reach_type = True # set to true if you want to split branches more than spread higher
 	reach_type = reach_type
-	straight_type = False
+	straight_type = True
 	# now branch settings
 	branch_num_max = 8
 	branch_num_min = 4
@@ -282,7 +282,7 @@ def create_tree(filename,reach_type):
 	image1.save(filename+".png")
 
 
-create_tree("tree_1",True)
+create_tree("tree_1",False)
 create_tree("tree_true2",True)
 create_tree("tree_true3",True)
 create_tree("tree_false1",False)

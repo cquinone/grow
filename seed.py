@@ -48,7 +48,7 @@ class Plant():
             # print that it did too, add in wait
             draw("text", curr_level.plant.name+" evolved!", [8,86])
             pg.time.wait(1100)
-            draw("text", "It is now in the "+self.curr_stage+" stage!",[8,93])
+            draw("text", "It is now in the "+self.curr_stage+" stage!",[8,93],"midfont")
             pg.time.wait(1100)
         else:
             # need to write that plant name did not evolve
@@ -67,28 +67,19 @@ def draw(type,rsp,pos, fonttype="font", color=pg.Color('SALMON')):
         if fonttype == "bigfont":
             rsp_surface = big_reg_font.render(rsp, True, color)
             text_w , text_h = bigfont.size(rsp)
-        if fonttype == "littlefont":
-            rsp_surface = littlefont.render(rsp, True, color)
-            text_w , text_h = littlefont.size(rsp)
+        if fonttype == "midfont":
+            rsp_surface = midfont.render(rsp, True, color)
+            text_w , text_h = midfont.size(rsp)
         screen.blit(rsp_surface, (input_box.x+x, input_box.y+y))
-        pg.display.update(pg.Rect(input_box.x+x, input_box.y+y, text_w+40, text_h))
+        pg.display.update(pg.Rect(input_box.x+x, input_box.y+y, text_w, text_h))
    
     if type == "img":
         screen.blit(rsp,pos)
         img_w,img_h = rsp.get_size()
-        pg.display.update(pg.Rect(x,y, img_w, img_h))  
+        pg.display.update(pg.Rect(x,y, img_w, img_h))
 
     # pump events so drawing works?
     pg.event.pump()
-
-
-# rotate an image around its center
-def rot_center(image, angle):
-    center = image.get_rect().center
-    rotated_image = pg.transform.rotate(image, angle)
-    #new_rect = rotated_image.get_rect(center = center)
-
-    return rotated_image#, new_rect
 
 
 # extra function to determine action from click on store
@@ -173,7 +164,7 @@ def response(cmd, curr_level, stage_dict, img_dict):
         
         # draw message and cloud at same time
         draw("text", "Rain clouds darken the sky.", [8,5])
-        draw("img",rain, [560,60])
+        draw("img",rain, [540,-50])
         pg.time.wait(500)
         #now animate rain
         draw("img", drop, [580,160])
@@ -205,7 +196,7 @@ def response(cmd, curr_level, stage_dict, img_dict):
 
         # draw message and sun at same time
         draw("text", "The sun is high in the sky.", [8,5])
-        draw("img",sun, [560,10])
+        draw("img",sun, [560,-100])
         pg.time.wait(500)
         #now animate sun
         draw("img", ray, [610,175])
@@ -246,7 +237,7 @@ def response(cmd, curr_level, stage_dict, img_dict):
         draw("text",rsp,[8,5])
         pg.time.wait(2000)
         text_w , text_h = font.size(rsp)
-        pg.draw.rect(screen, WHITE, (input_box.x+8,input_box.y+5,input_box.x+8+text_w,input_box.y+5+text_h))
+        pg.draw.rect(screen, WHITE, (input_box.x+8,input_box.y+5,input_box.x+text_w,input_box.y+text_h))
         pg.display.update(pg.Rect(input_box.x+8,input_box.y+5,input_box.x+8+text_w,input_box.y+5+text_h))
         not_clear = True
 
@@ -255,9 +246,9 @@ def response(cmd, curr_level, stage_dict, img_dict):
         draw("img", cover, [input_box.x,input_box.y])
         draw("text", "Another day passes.", [8,5])
         pg.time.wait(1100)
-        draw("text", "Each of your plants loses one water and one sun.", [8,22])
+        draw("text", "Each of your plants decays.", [8,22])
         pg.time.wait(1100)
-        draw("text", "Don't forget to check each!",[8,39]) 
+        draw("text", "Don't forget to check on them!",[8,39]) 
         pg.time.wait(1100)
         # if day has passed, we want to check for plant evolve and change plant img accordingly
         curr_level.plant.evo_check(stage_dict, img_dict) 
@@ -280,7 +271,8 @@ screen = pg.display.set_mode((WIDTH, HEIGHT))
 font = pg.font.SysFont("couriernew", 16, bold=True)
 bigfont = pg.font.SysFont("cochin", 24, bold=True)
 big_reg_font = pg.font.SysFont("couriernew", 20)
-littlefont = pg.font.SysFont("georgia", 12, bold=True)
+copyfont = pg.font.SysFont("georgia", 12, bold=True)
+midfont = pg.font.SysFont("couriernew", 15, bold=True)
 clock = pg.time.Clock()
 input_box = pg.Rect(60, 130, 300, 32)
 cursor_box = pg.Rect(60,135, 10, 20)
@@ -292,7 +284,7 @@ intro = True
 intro_timer = 0
 info_timer = 0
 name_scr = False
-copyright = littlefont.render("Property of  YaboiCQ games  "+u"\u2122"+", 2019, all rights reserved "+u"\u00AE", True, GREEN)
+copyright = copyfont.render("Property of  YaboiCQ games  "+u"\u2122"+", 2019, all rights reserved "+u"\u00AE", True, GREEN)
 
 # images
 intro = pg.image.load("pics/intro.png").convert_alpha()
@@ -301,12 +293,12 @@ info = pg.image.load("pics/infocopy.png").convert_alpha()
 info = pg.transform.scale(info, [int(.5*1678), int(.5*1358)])
 name_pic = pg.image.load("pics/name_scr.png").convert_alpha()
 name_pic = pg.transform.scale(name_pic, [int(.5*1678), int(.5*1358)])
-background = pg.image.load("pics/back_box2.png").convert_alpha()
+background = pg.image.load("pics/back_box_copy.png").convert_alpha()
 background = pg.transform.scale(background, [WIDTH,HEIGHT])
 back_nobox = pg.image.load("pics/background.png").convert_alpha()
 back_nobox = pg.transform.scale(back_nobox, [WIDTH,HEIGHT])
 cover = pg.image.load("pics/cover.png").convert_alpha()
-cover = pg.transform.scale(cover, [490,600])
+cover = pg.transform.scale(cover, [int(.8*490),int(600)])
 rain = pg.image.load("pics/cloud.png").convert_alpha()
 rain = pg.transform.scale(rain, [int(.5*390), int(.5*198)])   # dimension nums based on image size
 drop = pg.image.load("pics/drop.png").convert_alpha()
@@ -318,7 +310,6 @@ ray_cover = pg.image.load("pics/ray_cover.png").convert_alpha()
 #seed = pg.image.load("pics/seed.png").convert_alpha()
 seed = pg.image.load("tree_1.png").convert_alpha()
 #seed = pg.transform.scale(seed, [int(1.2*380),int(1.2*300)])
-#seed = rot_center(seed,180)
 #seed = pg.transform.scale(seed, [int(.6*99),int(.6*126)])
 quit_ask = pg.image.load("pics/test_ask.png").convert_alpha()
 store = pg.image.load("pics/store_test.png").convert_alpha()
@@ -337,8 +328,8 @@ pg.display.update()
 
 # set up first plant, set as plant in focus
 first_plant = Plant("",seed)
-plant_disp_x = 420  # coords for basic plant display
-plant_disp_y = 150
+plant_disp_x = 480  # coords for basic plant display
+plant_disp_y = 190
 
 #initial values
 curr_level = Level()
@@ -397,7 +388,7 @@ while not done:
             #  now that enter has been pressed and a response drawn and then cleared, need to redraw plant and day!
             # Blit Day counter, render only if day has changed or not rendered yet
             if day_change:
-        	        day_surface = font.render("DAY: "+str(curr_level.day), True, BLACK)
+                day_surface = font.render("DAY: "+str(curr_level.day), True, BLACK)
 
             screen.blit(day_surface, (92, 60))
             text_w , text_h = font.size("DAY: "+str(curr_level.day))
@@ -474,11 +465,13 @@ while not done:
         else:
             # once named, blit name, then announcements
             name_surface = font.render(curr_level.plant.name, True, cmd_color)
+            screen.blit(name_pic, [0,0])
             screen.blit(name_surface, (input_box.x+5, input_box.y+5))
             draw("img", curr_level.plant.img, [plant_disp_x,plant_disp_y])
-            draw("text", curr_level.plant.name+" was planted:", [510,40], color=GREEN)
+            draw("text", curr_level.plant.name+" was planted!", [402,-30], color=GREEN)
+            pg.display.update()
             pg.time.wait(1100)
-            draw("text", "Treat it well!", [510,250], color=GREEN)
+            draw("text", "Treat it well!", [402,-10], color=GREEN)
             pg.time.wait(1700)
             name_scr = False
         
