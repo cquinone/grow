@@ -163,22 +163,55 @@ def response(cmd, curr_level, stage_dict, img_dict):
         curr_level.plant.stage = curr_level.plant.stage + max(exp_stage,1.0)
         
         # draw message and cloud at same time
+        drop_sound.play()
         draw("text", "Rain clouds darken the sky.", [8,5])
-        draw("img",rain, [540,-50])
+        draw("img",rain, [510,-40])
         pg.time.wait(500)
         #now animate rain
-        draw("img", drop, [580,160])
-        draw("img", drop, [660, 160])
+        drop_list = []
+        drop_list.append(pg.draw.line(screen, BLUE, [580,80], [560,100], 3))
+        drop_list.append(pg.draw.line(screen, BLUE, [700,80], [680,100], 3))
+        drop_list.append(pg.draw.line(screen, BLUE, [640,80], [620,100], 3))
+        pg.display.update(drop_list)
         pg.time.wait(500)
-        draw("img", drop_cover, [580,160])
-        draw("img", drop_cover, [660,160])
+        drop_list = []
+        drop_list.append(pg.draw.line(screen, WHITE, [580,80], [560,100], 3))
+        drop_list.append(pg.draw.line(screen, WHITE, [700,80], [680,100], 3))
+        drop_list.append(pg.draw.line(screen, WHITE, [640,80], [620,100], 3))
+        pg.display.update(drop_list)
+        pg.time.wait(350)
+        drop_list = []
+        drop_list.append(pg.draw.line(screen, BLUE, [600,130], [580,150], 3))
+        drop_list.append(pg.draw.line(screen, BLUE, [720,130], [700,150], 3))
+        drop_list.append(pg.draw.line(screen, BLUE, [660,130], [640,150], 3))
+        pg.display.update(drop_list)
         pg.time.wait(500)
-        draw("img", drop, [640,190])
-        draw("img", drop, [720, 190])
+        drop_list = []
+        drop_list.append(pg.draw.line(screen, WHITE, [600,130], [580,150], 3))
+        drop_list.append(pg.draw.line(screen, WHITE, [720,130], [700,150], 3))
+        drop_list.append(pg.draw.line(screen, WHITE, [660,130], [640,150], 3))
+        pg.display.update(drop_list)
         pg.time.wait(500)
-        draw("img", drop_cover, [640,190])
-        draw("img", drop_cover, [720, 190])
-        pg.time.wait(800)              
+        #update = pg.draw.line(screen, BLUE, [620,130], [600,150], 2)
+        #pg.display.update(update)
+        #update = pg.draw.line(screen, BLUE, [710,130], [690,150], 2)
+        #pg.display.update(update)
+        #pg.time.wait(500)
+        #update = pg.draw.line(screen, WHITE, [620,130], [600,150], 2)
+        #pg.display.update(update)
+        #update = pg.draw.line(screen, WHITE, [710,130], [690,150], 2)
+        #pg.display.update(update)
+        #draw("img", drop, [580,100])
+        #draw("img", drop, [660, 100])
+        #pg.time.wait(500)
+        #draw("img", drop_cover, [580,100])
+        #draw("img", drop_cover, [660,100])
+        #pg.time.wait(500)
+        #draw("img", drop, [640,70])
+        #draw("img", drop, [720, 70])
+        #pg.time.wait(500)
+        #draw("img", drop_cover, [640,70])
+        #draw("img", drop_cover, [720, 70])             
 
     if cmd == "sun" or cmd == "sunbathe":
         curr_level.day = curr_level.day + 1
@@ -196,7 +229,7 @@ def response(cmd, curr_level, stage_dict, img_dict):
 
         # draw message and sun at same time
         draw("text", "The sun is high in the sky.", [8,5])
-        draw("img",sun, [560,-100])
+        draw("img",sun, [540,-100])
         pg.time.wait(500)
         #now animate sun
         draw("img", ray, [610,175])
@@ -293,18 +326,18 @@ info = pg.image.load("pics/infocopy.png").convert_alpha()
 info = pg.transform.scale(info, [int(.5*1678), int(.5*1358)])
 name_pic = pg.image.load("pics/name_scr.png").convert_alpha()
 name_pic = pg.transform.scale(name_pic, [int(.5*1678), int(.5*1358)])
-background = pg.image.load("pics/back_box_copy.png").convert_alpha()
+background = pg.image.load("pics/back_box.png").convert_alpha()
 background = pg.transform.scale(background, [WIDTH,HEIGHT])
 back_nobox = pg.image.load("pics/background.png").convert_alpha()
 back_nobox = pg.transform.scale(back_nobox, [WIDTH,HEIGHT])
 cover = pg.image.load("pics/cover.png").convert_alpha()
 cover = pg.transform.scale(cover, [int(.8*490),int(600)])
 rain = pg.image.load("pics/cloud.png").convert_alpha()
-rain = pg.transform.scale(rain, [int(.5*390), int(.5*198)])   # dimension nums based on image size
+rain = pg.transform.scale(rain, [int(.6*390), int(.5*198)])   # dimension nums based on image size
 drop = pg.image.load("pics/drop.png").convert_alpha()
 drop_cover = pg.image.load("pics/drop_cover.png").convert_alpha()
 sun  = pg.image.load("pics/sun2.png").convert_alpha()
-sun = pg.transform.scale(sun, [int(.72*252), int(.72*252)])
+sun = pg.transform.scale(sun, [int(.82*252), int(.82*252)])
 ray = pg.image.load("pics/ray.png").convert_alpha()
 ray_cover = pg.image.load("pics/ray_cover.png").convert_alpha()
 #seed = pg.image.load("pics/seed.png").convert_alpha()
@@ -317,6 +350,10 @@ textbox = pg.image.load("pics/textbox_copy.png").convert_alpha()
 #tree_img = pg.image.load("first_tree.png").convert_alpha()
 bud = sun # for now, use sun as next evo pic
 img_dict = {"seed": seed, "bud": bud}
+
+
+#sounds
+drop_sound  = pg.mixer.Sound("sounds/final_cut_rain.wav")
 
 
 #timer buffers
