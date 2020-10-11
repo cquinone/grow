@@ -45,6 +45,7 @@ EVENTS:
 	storm, have to treat accordingly?
 	minigame during?
 
+
 PLANT GEN:
 	ask about what you like in a plant???? (for first one!!!)
 	for trunk splitting, if split bias angle towards left or right for each split (along that split)
@@ -59,6 +60,13 @@ PLANT GEN:
 						  trunks should be allowed to be thicker on occasion -- thickness tied to trunk num?
 
 	POSIBLE: lower trunk num in general, let branches do fine stuff
+
+
+
+NEED TO DO: move plant box down, move stats down too
+			possible change rain and rays to be in  iten list, chekc  on each frame is "alive" -> if not, dont include in items draw list, update will destroy?
+			draw plant second, but fit into  box (so oincrease box size slightly in  both directions)
+			raise cloud and sun to cut off half, change animation to lines andthese stop on box  outlining plant
 
 
 use tkinter to draw things on a canvas, randomize drawings in way that makes rando plant, then come up with rules to cross two drawings ..

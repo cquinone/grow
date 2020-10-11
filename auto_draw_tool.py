@@ -6,7 +6,7 @@ import sys
 
 
 pic_width = 380
-pic_height = 300
+pic_height = 200
 white = (255, 255, 255)
 choco = (210,105,30)
 sienna = (160,82,45)
@@ -282,7 +282,7 @@ def create_tree(filename,reach_type):
 	image1.save(filename+".png")
 
 
-create_tree("tree_true1",True)
+create_tree("tree_1",True)
 create_tree("tree_true2",True)
 create_tree("tree_true3",True)
 create_tree("tree_false1",False)

@@ -196,6 +196,13 @@ def response(cmd, curr_level, stage_dict, img_dict):
         curr_level.plant.stage = curr_level.plant.stage + max(exp_stage,1.0)
         curr_level.plant.hydration = curr_level.plant.hydration - .5
         
+        # real animation loop?
+        # gen items, locations
+        # loop thruogh time... if certain time reach, drop from draw list...
+        # but previous draw will remain! ... need to update square AROUND item...
+        # so capture bounding rect of item..
+        # keep rays and rain above box?.. could have bounce effect later on.. last so exact corrds worked out
+
         # draw message and sun at same time
         draw("text", "The sun is high in the sky.", [8,5])
         draw("img",sun, [560,10])
@@ -294,8 +301,10 @@ info = pg.image.load("pics/infocopy.png").convert_alpha()
 info = pg.transform.scale(info, [int(.5*1678), int(.5*1358)])
 name_pic = pg.image.load("pics/name_scr.png").convert_alpha()
 name_pic = pg.transform.scale(name_pic, [int(.5*1678), int(.5*1358)])
-background = pg.image.load("pics/mockup.png").convert_alpha()
+background = pg.image.load("pics/back_box2.png").convert_alpha()
 background = pg.transform.scale(background, [WIDTH,HEIGHT])
+back_nobox = pg.image.load("pics/background.png").convert_alpha()
+back_nobox = pg.transform.scale(back_nobox, [WIDTH,HEIGHT])
 cover = pg.image.load("pics/cover.png").convert_alpha()
 cover = pg.transform.scale(cover, [490,600])
 rain = pg.image.load("pics/cloud.png").convert_alpha()
@@ -308,6 +317,7 @@ ray = pg.image.load("pics/ray.png").convert_alpha()
 ray_cover = pg.image.load("pics/ray_cover.png").convert_alpha()
 #seed = pg.image.load("pics/seed.png").convert_alpha()
 seed = pg.image.load("tree_1.png").convert_alpha()
+#seed = pg.transform.scale(seed, [int(1.2*380),int(1.2*300)])
 #seed = rot_center(seed,180)
 #seed = pg.transform.scale(seed, [int(.6*99),int(.6*126)])
 quit_ask = pg.image.load("pics/test_ask.png").convert_alpha()
@@ -459,7 +469,7 @@ while not done:
             pg.display.update(pg.Rect(input_box.x+5, input_box.y+5, text_w+40, text_h))  
             # reset position
             cursor_box.x = old_x
-            screen.blit(background, [0,0])
+            screen.blit(back_nobox, [0,0])
 
         else:
             # once named, blit name, then announcements
