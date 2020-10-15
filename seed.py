@@ -48,7 +48,7 @@ class Plant():
             # print that it did too, add in wait
             draw("text", curr_level.plant.name+" evolved!", [8,86])
             pg.time.wait(1100)
-            draw("text", "It is now in the "+self.curr_stage+" stage!",[8,93],"midfont")
+            draw("text", "It is now in the "+self.curr_stage+" stage!",[8,106],"midfont")
             pg.time.wait(1100)
         else:
             # need to write that plant name did not evolve
@@ -165,53 +165,34 @@ def response(cmd, curr_level, stage_dict, img_dict):
         # draw message and cloud at same time
         drop_sound.play()
         draw("text", "Rain clouds darken the sky.", [8,5])
+        # could do mini loop and mess with alphas to have fade in cloud here, start low and overlay darker ones
         draw("img",rain, [510,-40])
-        pg.time.wait(500)
+        pg.time.wait(400)
         #now animate rain
         drop_list = []
         drop_list.append(pg.draw.line(screen, BLUE, [580,80], [560,100], 3))
         drop_list.append(pg.draw.line(screen, BLUE, [700,80], [680,100], 3))
         drop_list.append(pg.draw.line(screen, BLUE, [640,80], [620,100], 3))
         pg.display.update(drop_list)
-        pg.time.wait(500)
+        pg.time.delay(500)
         drop_list = []
         drop_list.append(pg.draw.line(screen, WHITE, [580,80], [560,100], 3))
         drop_list.append(pg.draw.line(screen, WHITE, [700,80], [680,100], 3))
         drop_list.append(pg.draw.line(screen, WHITE, [640,80], [620,100], 3))
         pg.display.update(drop_list)
-        pg.time.wait(350)
+        pg.time.delay(350)
         drop_list = []
         drop_list.append(pg.draw.line(screen, BLUE, [600,130], [580,150], 3))
         drop_list.append(pg.draw.line(screen, BLUE, [720,130], [700,150], 3))
         drop_list.append(pg.draw.line(screen, BLUE, [660,130], [640,150], 3))
         pg.display.update(drop_list)
-        pg.time.wait(500)
+        pg.time.delay(500)
         drop_list = []
         drop_list.append(pg.draw.line(screen, WHITE, [600,130], [580,150], 3))
         drop_list.append(pg.draw.line(screen, WHITE, [720,130], [700,150], 3))
         drop_list.append(pg.draw.line(screen, WHITE, [660,130], [640,150], 3))
         pg.display.update(drop_list)
-        pg.time.wait(500)
-        #update = pg.draw.line(screen, BLUE, [620,130], [600,150], 2)
-        #pg.display.update(update)
-        #update = pg.draw.line(screen, BLUE, [710,130], [690,150], 2)
-        #pg.display.update(update)
-        #pg.time.wait(500)
-        #update = pg.draw.line(screen, WHITE, [620,130], [600,150], 2)
-        #pg.display.update(update)
-        #update = pg.draw.line(screen, WHITE, [710,130], [690,150], 2)
-        #pg.display.update(update)
-        #draw("img", drop, [580,100])
-        #draw("img", drop, [660, 100])
-        #pg.time.wait(500)
-        #draw("img", drop_cover, [580,100])
-        #draw("img", drop_cover, [660,100])
-        #pg.time.wait(500)
-        #draw("img", drop, [640,70])
-        #draw("img", drop, [720, 70])
-        #pg.time.wait(500)
-        #draw("img", drop_cover, [640,70])
-        #draw("img", drop_cover, [720, 70])             
+        pg.time.delay(500)             
 
     if cmd == "sun" or cmd == "sunbathe":
         curr_level.day = curr_level.day + 1
@@ -266,13 +247,26 @@ def response(cmd, curr_level, stage_dict, img_dict):
                         click = True
 
     if cmd not in possible_cmd_list:
-        rsp =  cmd+" is not an available command"        
-        draw("text",rsp,[8,5])
-        pg.time.wait(2000)
-        text_w , text_h = font.size(rsp)
-        pg.draw.rect(screen, WHITE, (input_box.x+8,input_box.y+5,input_box.x+text_w,input_box.y+text_h))
-        pg.display.update(pg.Rect(input_box.x+8,input_box.y+5,input_box.x+8+text_w,input_box.y+5+text_h))
-        not_clear = True
+    	rsp_words = ["is","not","an","available","command"]
+    	print_list = []
+    	for word in rsp_words:
+    		if len(cmd+" "+word) <= 30:
+    			cmd = cmd + " "+ word
+    		else:
+    			print_list.append(cmd)
+    			cmd = ""
+    			cmd = cmd + word
+    	print_list.append(cmd)
+
+    	for j in range(len(print_list)):
+    		line = print_list[j]
+    		draw("text",line,[8,5+(20*j)])
+
+    	pg.time.wait(2000)
+    	text_w , text_h = font.size(print_list[0])
+    	pg.draw.rect(screen, WHITE, (input_box.x+8,input_box.y+5,input_box.x+text_w,input_box.y+text_h))
+    	pg.display.update(pg.Rect(input_box.x+8,input_box.y+5,input_box.x+8+text_w,input_box.y+5+text_h))
+    	not_clear = True
 
     # day has gone by, update plants and print day end message if a day has gone by
     if old_day < curr_level.day:
@@ -291,13 +285,14 @@ def response(cmd, curr_level, stage_dict, img_dict):
     # Blit background image first (so below everything else), this is also serving as the "clear" everything function
     if not not_clear:	
     	screen.blit(background, [0,0])
+    	draw("img", curr_level.plant.img, [plant_disp_x,plant_disp_y])
+    	# add stats draw here, since reponse to item usage may be change them!! --> or draw the update before the day has even gone by.. could be cover with
+    	# rect, then draw, update stats area
     	pg.display.update()
 
     return old_day < curr_level.day
 
 
-# test auto_draw
-#auto_draw.create_tree('first_tree')
 pg.init()
 pg.display.set_caption('seed game')
 screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -324,7 +319,7 @@ intro = pg.image.load("pics/intro.png").convert_alpha()
 intro = pg.transform.scale(intro, [int(.5*1678), int(.5*1358)])
 info = pg.image.load("pics/infocopy.png").convert_alpha()
 info = pg.transform.scale(info, [int(.5*1678), int(.5*1358)])
-name_pic = pg.image.load("pics/name_scr.png").convert_alpha()
+name_pic = pg.image.load("pics/name_scr_copy.png").convert_alpha()
 name_pic = pg.transform.scale(name_pic, [int(.5*1678), int(.5*1358)])
 background = pg.image.load("pics/back_box.png").convert_alpha()
 background = pg.transform.scale(background, [WIDTH,HEIGHT])
@@ -334,8 +329,6 @@ cover = pg.image.load("pics/cover.png").convert_alpha()
 cover = pg.transform.scale(cover, [int(.8*490),int(600)])
 rain = pg.image.load("pics/cloud.png").convert_alpha()
 rain = pg.transform.scale(rain, [int(.6*390), int(.5*198)])   # dimension nums based on image size
-drop = pg.image.load("pics/drop.png").convert_alpha()
-drop_cover = pg.image.load("pics/drop_cover.png").convert_alpha()
 sun  = pg.image.load("pics/sun2.png").convert_alpha()
 sun = pg.transform.scale(sun, [int(.82*252), int(.82*252)])
 ray = pg.image.load("pics/ray.png").convert_alpha()
@@ -354,6 +347,8 @@ img_dict = {"seed": seed, "bud": bud}
 
 #sounds
 drop_sound  = pg.mixer.Sound("sounds/final_cut_rain.wav")
+drop_sound.set_volume(.5)
+# maybe get music, wind in trees sound, "sun sound" ?
 
 
 #timer buffers
@@ -411,6 +406,8 @@ while not done:
             screen.blit(curr_level.plant.img, (plant_disp_x, plant_disp_y))
             day_surface = font.render("DAY: "+str(curr_level.day), True, BLACK)
             screen.blit(day_surface, (92, 60))
+            #make one surface?
+            #stat_surface = font.render()
             pg.display.update()
             response_start = True
 
@@ -418,7 +415,7 @@ while not done:
             cover_box = pg.Rect(input_box.x, input_box.y, cmd_surface.get_width()+40, cmd_surface.get_height()+10)
             pg.draw.rect(screen, WHITE, cover_box)
             pg.display.update(cover_box)
-            # pump events so drawing works?
+            # pump events so drawing works....
             pg.event.pump()
             day_change = response(cmd, curr_level, stage_dict, img_dict)
             cmd  = ""
@@ -430,15 +427,13 @@ while not done:
             screen.blit(day_surface, (92, 60))
             text_w , text_h = font.size("DAY: "+str(curr_level.day))
             pg.display.update(pg.Rect(92, 60, text_w, text_h))
-        	# Blit plant again!
-            draw("img", curr_level.plant.img, [plant_disp_x,plant_disp_y])
 
         # Blit command as it's being typed
         if not enter:
             text_w , text_h = font.size(cmd)
             pg.draw.rect(screen,WHITE,(input_box.x+5, input_box.y+5, text_w+40, text_h))
             screen.blit(cmd_surface, (input_box.x+5, input_box.y+5))
-            #update cursor position
+            # update cursor position
             old_x = cursor_box.x
             cursor_box.x = cursor_box.x + text_w+5
             # Blit the cursor depending on flicker
@@ -471,15 +466,19 @@ while not done:
             pg.display.update()
             info_timer = info_timer + 1
             if info_timer > second_screen_buffer:
-                intro = False
-                name_scr = True
-                screen.blit(name_pic, [0,0])
-                pg.display.update()
+            	intro = False
+            	name_scr = True
+            	screen.blit(name_pic, [0,0])
+            	pg.display.update()
 
     if name_scr and not intro:
-        #screen.fill(WHITE)
         text_w , text_h = font.size(cmd)
+        # only do this once (below)
+        if info_timer == second_screen_buffer + 1:
+        	draw("text", "NAME YOUR FIRST PLANT", [30,-46], color=GREEN)
         
+        info_timer = info_timer + 1
+
         # only blit new cmds if still naming plant, and only reset cursor if no name
         if curr_level.plant.name == "":
             screen.blit(cmd_surface, (input_box.x+5, input_box.y+5))

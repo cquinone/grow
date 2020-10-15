@@ -6,7 +6,8 @@ GEN DISPLAY:
 	possibly move day check that renders final message out of response? kinda makes sense now
 	^ also content to be pre-rendered
 	check if plant needs to be drawn as much as is? and why draw function for imgs again...
-	does plant itslef ever get updated? (would get captured in full screen update i suppose)
+	does plant itself ever get updated? (would get captured in full screen update i suppose)
+	make clouds and sun fade in, then have droplets / rays bounce / splash on plant box
 
 
 STORE:
