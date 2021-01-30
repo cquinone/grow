@@ -209,7 +209,7 @@ def response(cmd, curr_level, stage_dict, img_dict):
         drop_list.append(pg.draw.line(screen, WHITE, [663,160], [667,155], 3))
         drop_list.append(pg.draw.line(screen, WHITE, [661,160], [662,148], 1))
         drop_list.append(pg.draw.line(screen, WHITE, [661,142], [662,135], 1))
-        pg.time.delay(400)
+        #pg.time.delay(400)
         pg.display.update(drop_list)
 
     if cmd == "sun" or cmd == "sunbathe":
@@ -300,7 +300,9 @@ def response(cmd, curr_level, stage_dict, img_dict):
 
     # now re-allow input as repsonse is over
     pg.event.set_allowed(pg.KEYDOWN)
+    
     # Blit background image first (so below everything else), this is also serving as the "clear" everything function
+    # not_clear is true when displaying something that shouldn't affect plant pic (cmds, mistake, etc)
     if not not_clear:	
     	screen.blit(background, [0,0])
     	draw("img", curr_level.plant.img, [plant_disp_x,plant_disp_y])
@@ -428,6 +430,8 @@ while not done:
             #stat_surface = font.render()
             pg.display.update()
             response_start = True
+            # do a forced help command to just show possible commands
+            day_change = response("help", curr_level, stage_dict, img_dict)
 
         if enter == True:  # if command has been entered by pressing enter?
             cover_box = pg.Rect(input_box.x, input_box.y, cmd_surface.get_width()+40, cmd_surface.get_height()+10)

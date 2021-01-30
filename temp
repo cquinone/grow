@@ -1,0 +1,167 @@
+commit 66ca73b92b76db1cdc59815b2975b095cf1720cb
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Sun Oct 18 05:11:28 2020 -0400
+
+    water animation stuff
+
+commit 0e62854490d4f43c792d850b6c7f16f58be0404b
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Thu Oct 15 00:31:35 2020 -0400
+
+    command error updates
+
+commit 6a9e74e101ed8a19a338701b7ce2927a2c9c2308
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Sun Oct 11 09:10:23 2020 -0400
+
+    slight file change
+
+commit a476bfa77d900dd269ac914697c8f59f61f69b60
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Sun Oct 11 09:09:44 2020 -0400
+
+    updated rain drops, added drop sound
+
+commit 7cba849e19c8ebd859edb29cb2de181def11c278
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Sun Oct 11 08:18:17 2020 -0400
+
+    more slog
+
+commit 08de27df5ebe1119d7421bf5b5d6142026e26cb5
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Sat Oct 10 22:04:28 2020 -0400
+
+    the long slog
+
+commit eaf6c957cc0ee7690d300019721079a3ec001fdb
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Thu Oct 8 09:03:38 2020 -0400
+
+    seed notes
+
+commit 784addc5fd14246c8c1909f2ff0068a3ae8275c9
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Mon Sep 14 05:38:08 2020 -0400
+
+    lol extra newline
+
+commit 4f7a53a260296be27423f0e0d8b37c4b5a569099
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Mon Sep 14 05:37:03 2020 -0400
+
+    massively updated trunk splitting to add possible types and control over when, where, and how much
+
+commit d2969593b17f685259289f7d37bb3110f6531c3e
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Sun Sep 13 04:45:50 2020 -0400
+
+    timing adjustment
+
+commit 9b84f9918859c7973c09265f7de802d98d2440f5
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Sun Sep 13 04:43:10 2020 -0400
+
+    slight update removal speed ups, solves seed flicker
+
+commit 30298ff3ebe4e1a72bfe61b7977144ce774eeb48
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Sat Sep 12 14:12:28 2020 -0400
+
+    major speed ups to match fps
+
+commit 679a01ea33fb93fc14deb1c8f18a81e50b944622
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Sat Sep 12 03:02:28 2020 -0400
+
+    possible speed up on day count drawing
+
+commit 56f2c97f0d92900235e27a0692d74b35b125076a
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Sat Sep 12 02:33:58 2020 -0400
+
+    some real branching logic in (trunk splitting)
+
+commit 14f2f35ef8b401a82bef1b48af54d899b1e01f80
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Wed Sep 9 03:18:48 2020 -0400
+
+    extra file remove
+
+commit 9ffa04b6f0b575846574234fd71c3e9ac8920431
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Tue Sep 8 23:33:41 2020 -0400
+
+    lol
+
+commit 4fd7635c92f5d03625a26e4cbbb85bc9651c7c88
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Tue Sep 8 23:11:02 2020 -0400
+
+    working on trunk splitting, temp
+
+commit a2cf7f547b11b197a9d69fc69e8f658dcec88739
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Tue Sep 8 00:21:27 2020 -0400
+
+    more trunk split work
+
+commit e6002f5b487a9483fe5413ce3271af7bb518a151
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Mon Sep 7 23:27:41 2020 -0400
+
+    more commenting
+
+commit 7d5a6e6e02fcfa91836a30e3d6bc62524063675f
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Mon Sep 7 15:10:16 2020 -0400
+
+    refactoring for splitting addition
+
+commit c811ac29768a06560b06e599154ba4dd652e400d
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Wed Sep 2 13:43:06 2020 -0400
+
+    don't need old seed version anymore
+
+commit ab4fb055b28a8fb6d4cba186286750e4fcf95d8b
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Wed Sep 2 13:41:23 2020 -0400
+
+    updates and cleanup
+
+commit 6e4ec7591d877afd9e37f52ce9ec80f708970964
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Tue Sep 1 19:21:47 2020 -0400
+
+    implemented rough corner filling
+
+commit 8f6d2be2f46c0099e05f4fdbf6806312b9f1d20e
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Mon Aug 31 15:31:50 2020 -0400
+
+    adding corner fill to auto_draw
+
+commit 8123ff51b7014b49ed04cb7d0de22dac7ff3b7b4
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Mon Aug 31 14:35:09 2020 -0400
+
+    testing filling trunk gaps
+
+commit 758f936aa769fb17bb5648e766b671fbb8183d6b
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Sun Aug 30 01:17:42 2020 -0400
+
+    attempting bezier curves on auto draw
+
+commit 5585b50d23d951ccc52546156e42ef35f82c771b
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Fri Aug 21 15:23:27 2020 -0400
+
+    more auto_draw experiments
+
+commit 1d792f85e66700ab5db151113c7fd5e9712b0860
+Author: Christopher Quinones <c.a.quinone@gmail.com>
+Date:   Wed Aug 12 12:55:39 2020 -0400
+
+    initial
