@@ -65,9 +65,26 @@ PLANT GEN:
 
 
 NEED TO DO: move plant box down, move stats down too
-			possible change rain and rays to be in  iten list, chekc  on each frame is "alive" -> if not, dont include in items draw list, update will destroy?
+			possible change rain and rays to be in  iten list, check  on each frame is "alive" -> if not, dont include in items draw list, update will destroy?
 			draw plant second, but fit into  box (so oincrease box size slightly in  both directions)
 			raise cloud and sun to cut off half, change animation to lines andthese stop on box  outlining plant
+			1_30_21 --- make seed (and bud?) image? or establish generator... add "ground" line and draw over this for each, .. have
+						"seed" coordinates and draw below?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 use tkinter to draw things on a canvas, randomize drawings in way that makes rando plant, then come up with rules to cross two drawings ..

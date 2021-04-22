@@ -35,7 +35,7 @@ class Plant():
         self.img = img
 
     def evo_check(self, stage_dict, img_dict):
-        draw("text", "Performing evoluton check...", [8,66])
+        draw("text", "Performing evolution check...", [8,66])
         pg.time.wait(1100)
         sorted_keys = sorted(stage_dict.keys())
         for key in sorted_keys:
@@ -341,8 +341,9 @@ info = pg.image.load("pics/infocopy.png").convert_alpha()
 info = pg.transform.scale(info, [int(.5*1678), int(.5*1358)])
 name_pic = pg.image.load("pics/name_scr_copy.png").convert_alpha()
 name_pic = pg.transform.scale(name_pic, [int(.5*1678), int(.5*1358)])
-background = pg.image.load("pics/back_box.png").convert_alpha()
-background = pg.transform.scale(background, [WIDTH,HEIGHT])
+background = pg.image.load("pics/back_box_copy.png").convert_alpha()
+#background = pg.transform.scale(background, [WIDTH,HEIGHT])
+background = pg.transform.scale(background, [int(.5*1678), int(.5*1358)])
 back_nobox = pg.image.load("pics/background.png").convert_alpha()
 back_nobox = pg.transform.scale(back_nobox, [WIDTH,HEIGHT])
 cover = pg.image.load("pics/cover.png").convert_alpha()
@@ -426,19 +427,16 @@ while not done:
             screen.blit(curr_level.plant.img, (plant_disp_x, plant_disp_y))
             day_surface = font.render("DAY: "+str(curr_level.day), True, BLACK)
             screen.blit(day_surface, (92, 60))
-            #make one surface?
-            #stat_surface = font.render()
             pg.display.update()
             response_start = True
             # do a forced help command to just show possible commands
-            day_change = response("help", curr_level, stage_dict, img_dict)
 
         if enter == True:  # if command has been entered by pressing enter?
             cover_box = pg.Rect(input_box.x, input_box.y, cmd_surface.get_width()+40, cmd_surface.get_height()+10)
             pg.draw.rect(screen, WHITE, cover_box)
             pg.display.update(cover_box)
             # pump events so drawing works....
-            pg.event.pump()
+            # pg.event.pump()
             day_change = response(cmd, curr_level, stage_dict, img_dict)
             cmd  = ""
             #  now that enter has been pressed and a response drawn and then cleared, need to redraw plant and day!
